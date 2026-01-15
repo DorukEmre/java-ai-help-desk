@@ -1,0 +1,100 @@
+services:
+
+  servicedesk-caddy:
+    image: caddy:2.10.2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - servicedesk-api-gateway-dev
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - servicedesk-network
+
+  # servicedesk-frontend-dev:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.dev
+  #   image: servicedesk-frontend-dev
+  #   ports: [5173:5173]
+  #   env_file:
+  #     - .env
+  #     - ./frontend/.env
+  #   environment:
+  #     - VITE_API_BASE_URL=${API_SERVER_URL_LOCAL}
+  #   networks:
+  #     - servicedesk-network
+  #   volumes:
+  #     - node_modules:/app/node_modules
+  #     - ./frontend:/app
+      
+  servicedesk-api-gateway-dev:
+    build:
+      context: ./backend
+      dockerfile: api-gateway/Dockerfile.dev
+    image: servicedesk-api-gateway-dev
+    working_dir: /app/api-gateway
+    expose: [8000]
+    command: ["./mvnw", "clean", "-Pdev", "spring-boot:run"]
+    env_file:
+      - .env
+    environment:
+      SERVER_PORT: "8000"
+      API_SERVER_URL: ${API_SERVER_URL_LOCAL}
+    volumes:
+      - ./backend:/app
+      - ${HOME}/.m2:/root/.m2
+    networks:
+      - servicedesk-network
+      
+  servicedesk-user-service-dev:
+    build:
+      context: ./backend
+      dockerfile: user-service/Dockerfile.dev
+    image: servicedesk-user-service-dev
+    working_dir: /app/user-service
+    expose: [8081]
+    command: ["./mvnw", "clean", "spring-boot:run"]
+    env_file:
+      - .env
+    environment:
+      SERVER_PORT: "8081"
+      DB_STRING: ${DB_STRING}
+      API_SERVER_URL: ${API_SERVER_URL_LOCAL}
+    volumes:
+      - ./backend:/app
+      - ${HOME}/.m2:/root/.m2
+    networks:
+      - servicedesk-network
+
+  servicedesk-ticket-service-dev:
+    build:
+      context: ./backend
+      dockerfile: ticket-service/Dockerfile.dev
+    image: servicedesk-ticket-service-dev
+    working_dir: /app/ticket-service
+    expose: [8082]
+    command: ["./mvnw", "clean", "spring-boot:run"]
+    env_file:
+      - .env
+    environment:
+      SERVER_PORT: "8082"
+      DB_STRING: ${DB_STRING}
+      API_SERVER_URL: ${API_SERVER_URL_LOCAL}
+    volumes:
+      - ./backend:/app
+      - ${HOME}/.m2:/root/.m2
+    networks:
+      - servicedesk-network
+      
+networks:
+  servicedesk-network:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+  node_modules:
