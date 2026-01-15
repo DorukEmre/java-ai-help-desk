@@ -1,0 +1,6 @@
+FROM eclipse-temurin:21-jdk-alpine
+
+# Set working directory inside container
+WORKDIR /app
+
+# Working directory mounted as a volume for live development
