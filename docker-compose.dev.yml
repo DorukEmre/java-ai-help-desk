@@ -14,22 +14,19 @@ services:
     networks:
       - servicedesk-network
 
-  # servicedesk-frontend-dev:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile.dev
-  #   image: servicedesk-frontend-dev
-  #   ports: [5173:5173]
-  #   env_file:
-  #     - .env
-  #     - ./frontend/.env
-  #   environment:
-  #     - VITE_API_BASE_URL=${API_SERVER_URL_LOCAL}
-  #   networks:
-  #     - servicedesk-network
-  #   volumes:
-  #     - node_modules:/app/node_modules
-  #     - ./frontend:/app
+  servicedesk-frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    image: servicedesk-frontend-dev
+    ports: [5173:5173]
+    environment:
+      - VITE_API_BASE_URL=${API_SERVER_URL_LOCAL}
+    networks:
+      - servicedesk-network
+    volumes:
+      - node_modules:/app/node_modules
+      - ./frontend:/app
       
   servicedesk-api-gateway-dev:
     build:
