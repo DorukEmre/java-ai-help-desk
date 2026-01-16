@@ -1,0 +1,34 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+
+$custom-colors: (
+  back-100: #0a0b0c,
+  back-200: #111213,
+  back-300: #181a1b,
+  back-400: #1d1f20,
+  back-500: #2b2a33,
+  back-600: #726a5e,
+
+  compl-200: #ad4804,
+  compl-300: #ff6600,
+  compl-400: #fd9518,
+
+  accent-300: #00A287,
+
+  neutral-300: #c5c0b9,
+  neutral-350: #a29a8e,
+
+  alert-300: #ff5c88,
+  alert-400: #e3426e,
+);
+
+:root {
+  @each $k, $v in $custom-colors {
+    --#{$k}: #{$v};
+  }
+}
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import "bootstrap";
