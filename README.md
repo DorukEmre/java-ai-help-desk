@@ -35,3 +35,12 @@ backend/
 └── ticket-service/             # Ticket management microservice
         └── pom.xml
 ```
+
+## Ticket status
+
+- Active:
+    - Open: Newly created tickets that haven't been assigned.
+    - Assigned: Tickets that are assigned to a user but not yet in progress.
+    - In-progress: Tickets that are currently being worked on.
+- Completed:
+    - Closed: Tickets that have been completed and marked as such.
