@@ -36,8 +36,8 @@ services:
     working_dir: /app/api-gateway
     expose: [8000]
     command: ["./mvnw", "clean", "-Pdev", "spring-boot:run"]
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     environment:
       SERVER_PORT: "8000"
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
@@ -57,11 +57,9 @@ services:
     working_dir: /app/user-service
     expose: [8081]
     command: ["./mvnw", "clean", "spring-boot:run"]
-    env_file:
-      - .env
     environment:
       SERVER_PORT: "8081"
-      DB_STRING: ${DB_STRING}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
       API_SERVER_URL: ${API_SERVER_URL_LOCAL}
     volumes:
       - ./backend:/app
@@ -77,11 +75,9 @@ services:
     working_dir: /app/ticket-service
     expose: [8082]
     command: ["./mvnw", "clean", "spring-boot:run"]
-    env_file:
-      - .env
     environment:
       SERVER_PORT: "8082"
-      DB_STRING: ${DB_STRING}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
       API_SERVER_URL: ${API_SERVER_URL_LOCAL}
     volumes:
       - ./backend:/app
