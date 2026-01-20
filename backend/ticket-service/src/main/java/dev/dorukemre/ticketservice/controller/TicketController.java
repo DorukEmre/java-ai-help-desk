@@ -16,6 +16,7 @@ import dev.dorukemre.ticketservice.entity.Ticket;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
 import dev.dorukemre.ticketservice.service.TicketService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Validated
@@ -36,7 +37,7 @@ public class TicketController {
   // })
   @GetMapping("/users/{userId}/tickets")
   public List<Ticket> listTicketsByUserId(@PathVariable("userId") String userId) {
-    System.out.println("GET /api/v1/users/{userId}/tickets called");
+    System.out.println("GET /api/v1/ticket/users/{userId}/tickets called");
 
     return ticketService.listTicketsByUserId(userId);
   }
@@ -44,8 +45,8 @@ public class TicketController {
   // @Operation(summary = "Create a new ticket", description = "Creates a new
   // ticket.")
   @PostMapping(value = "/users/{userId}/tickets")
-  public ResponseEntity<TicketCreationResponse> createTicket(@RequestBody TicketCreationRequest request) {
-    System.out.println("POST /api/v1/users/{userId}/tickets called");
+  public ResponseEntity<TicketCreationResponse> createTicket(@Valid @RequestBody TicketCreationRequest request) {
+    System.out.println("POST /api/v1/ticket/users/{userId}/tickets called");
 
     TicketCreationResponse response = ticketService.createTicket(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -57,7 +58,7 @@ public class TicketController {
   // tickets.")
   @GetMapping("/tickets")
   public List<Ticket> listTickets() {
-    System.out.println("GET /api/v1/tickets called");
+    System.out.println("GET /api/v1/ticket/tickets called");
 
     return ticketService.listTickets();
   }
