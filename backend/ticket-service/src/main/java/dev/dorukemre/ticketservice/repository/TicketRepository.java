@@ -10,5 +10,6 @@ import dev.dorukemre.ticketservice.entity.Ticket;
 @Repository
 public interface TicketRepository extends MongoRepository<Ticket, String> {
 
-  public List<Ticket> findByUserId(String userId);
+  // Returns all tickets for a specific user
+  public List<Ticket> findAllByUserId(String userId);
 }

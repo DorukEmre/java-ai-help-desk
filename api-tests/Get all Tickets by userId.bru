@@ -1,0 +1,20 @@
+meta {
+  name: Get all Tickets by userId
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{BASE_URL}}/users/:userId/tickets
+  body: none
+  auth: inherit
+}
+
+params:path {
+  userId: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

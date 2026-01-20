@@ -25,6 +25,7 @@ public class TicketService {
 
     Ticket ticket = new Ticket();
     ticket.setDescription(request.getDescription());
+    // ticket.setUserId(null);
     Ticket savedTicket = ticketRepository.save(ticket);
 
     return TicketCreationResponse.builder()
@@ -33,7 +34,13 @@ public class TicketService {
         .build();
   }
 
-  // public List<Ticket> listTickets() {
-  // return ticketRepository.findAll();
-  // }
+  public List<Ticket> listTicketsByUserId(String userId) {
+    System.out.println("userId: " + userId);
+
+    return ticketRepository.findAllByUserId(userId);
+  }
+
+  public List<Ticket> listTickets() {
+    return ticketRepository.findAll();
+  }
 }

@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.dorukemre.ticketservice.entity.Ticket;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
-import dev.dorukemre.ticketservice.service.ServiceDeskUserService;
-import dev.dorukemre.ticketservice.service.StandardUserService;
 import dev.dorukemre.ticketservice.service.TicketService;
 import lombok.RequiredArgsConstructor;
 
@@ -36,12 +34,12 @@ public class TicketController {
   // @ApiResponse(responseCode = "", description = ""),
   // @ApiResponse(responseCode = "", description = "")
   // })
-  // @GetMapping("/users/{userId}/tickets")
-  // public List<Ticket> listTicketsByUserId(@PathVariable String userId) {
-  // System.out.println("GET /api/v1/users/{userId}/tickets called");
+  @GetMapping("/users/{userId}/tickets")
+  public List<Ticket> listTicketsByUserId(@PathVariable("userId") String userId) {
+    System.out.println("GET /api/v1/users/{userId}/tickets called");
 
-  // return ticketService.listTicketsByUserId(userId);
-  // }
+    return ticketService.listTicketsByUserId(userId);
+  }
 
   // @Operation(summary = "Create a new ticket", description = "Creates a new
   // ticket.")
@@ -55,13 +53,13 @@ public class TicketController {
 
   // service desk user routes
 
-  // @Operation(summary = "List all tickets", description =
-  // "Retrieves all tickets.")
-  // @GetMapping("/tickets")
-  // public List<Ticket> listTickets() {
-  // System.out.println("GET /api/v1/tickets called");
+  // @Operation(summary = "List all tickets", description = "Retrieves all
+  // tickets.")
+  @GetMapping("/tickets")
+  public List<Ticket> listTickets() {
+    System.out.println("GET /api/v1/tickets called");
 
-  // return ticketService.listTickets();
-  // }
+    return ticketService.listTickets();
+  }
 
 }
