@@ -20,10 +20,10 @@ public class CorsGlobalConfiguration {
 
     CorsConfiguration corsConfig = new CorsConfiguration();
     // Specify frontend URL instead of "*" for better security
-    // corsConfig.addAllowedOriginPattern("*");
-    for (String origin : allowedOrigins) {
-      corsConfig.addAllowedOrigin(origin);
-    }
+    corsConfig.addAllowedOriginPattern("*");
+    // for (String origin : allowedOrigins) {
+    // corsConfig.addAllowedOrigin(origin);
+    // }
     corsConfig.setAllowCredentials(true);
 
     corsConfig.addAllowedMethod("*");
