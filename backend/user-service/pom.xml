@@ -44,7 +44,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+      <version>4.0.1</version>
+      <scope>compile</scope>
 		</dependency>
+    <!-- For JWT Creation -->
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-oauth2-jose</artifactId>
+        <version>7.0.2</version>
+        <scope>compile</scope>
+    </dependency>
     <!-- Bean Validation with Hibernate validator -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
