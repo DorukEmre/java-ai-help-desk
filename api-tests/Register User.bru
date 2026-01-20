@@ -6,10 +6,21 @@ meta {
 
 post {
   url: {{BASE_URL}}/register
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "username": "bob2",
+    "fullname": "bobby b",
+    "password": "Hello1",
+    "role": "STANDARD_USER"
+  }
+  
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
