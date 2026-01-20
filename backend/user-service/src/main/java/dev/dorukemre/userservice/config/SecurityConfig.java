@@ -2,9 +2,11 @@ package dev.dorukemre.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,15 +29,18 @@ public class SecurityConfig {
   // Main security filter chain
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
+    return http
         .csrf(csrf -> csrf.disable()) // stateless JWT, no CSRF needed
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/login", "/register").permitAll() // public endpoints
-            .anyRequest().authenticated() // everything else requires authentication
-        )
+            // public endpoints
+            .requestMatchers(HttpMethod.POST,
+                "/api/v1/user/login",
+                "/api/v1/user/register")
+            .permitAll()
+            // everything else requires auth
+            .anyRequest().authenticated())
         .sessionManagement(sess -> sess.sessionCreationPolicy(
-            org.springframework.security.config.http.SessionCreationPolicy.STATELESS));
-
-    return http.build();
+            SessionCreationPolicy.STATELESS))
+        .build();
   }
 }
