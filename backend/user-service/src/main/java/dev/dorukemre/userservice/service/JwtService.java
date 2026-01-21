@@ -21,7 +21,7 @@ public class JwtService {
   @Value("${spring.security.oauth2.resourceserver.jwt.secret}")
   private String SECRET;
 
-  private static final long EXPIRATION_SECONDS = 900; // 15 min
+  private static final long EXPIRATION_SECONDS = 9000; // 150 min
 
   public String generateToken(User user) {
     try {
