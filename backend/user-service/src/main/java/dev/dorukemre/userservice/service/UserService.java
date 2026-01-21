@@ -1,5 +1,7 @@
 package dev.dorukemre.userservice.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -102,6 +104,12 @@ public class UserService {
         .role(savedUser.getRole())
         .accessToken(accessToken)
         .build();
+  }
+
+  public List<User> listUsers() {
+    log.info("Listing all users");
+
+    return userRepository.findAll();
   }
 
 }

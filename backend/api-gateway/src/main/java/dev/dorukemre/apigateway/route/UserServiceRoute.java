@@ -36,6 +36,12 @@ public class UserServiceRoute {
 
         // internal routes
 
+        .route("list-users", r -> r
+            .path("/users")
+            .and().method(HttpMethod.GET)
+            .filters(f -> f.prefixPath("/api/v1/user"))
+            .uri(uri))
+
         .build();
   }
 
