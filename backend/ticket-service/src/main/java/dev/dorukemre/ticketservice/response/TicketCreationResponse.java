@@ -17,4 +17,7 @@ public class TicketCreationResponse {
 
   @NotBlank(message = "Status is required")
   private String status;
+
+  @NotBlank(message = "CreatedAt is required")
+  private String createdAt;
 }

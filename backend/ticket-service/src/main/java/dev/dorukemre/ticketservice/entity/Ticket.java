@@ -1,6 +1,10 @@
 package dev.dorukemre.ticketservice.entity;
 
+import java.time.Instant;
+
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.NotBlank;
@@ -31,6 +35,12 @@ public class Ticket {
   @NotBlank(message = "Status cannot be blank")
   @Builder.Default
   private String status = "open";
+
+  @CreatedDate
+  private Instant createdAt;
+
+  @LastModifiedDate
+  private Instant updatedAt;
 
   // @DBRef // To map to User entity instead of using userId
   // private User user;

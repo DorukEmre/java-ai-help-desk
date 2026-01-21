@@ -40,6 +40,7 @@ public class TicketService {
     return TicketCreationResponse.builder()
         .description(savedTicket.getDescription())
         .status(savedTicket.getStatus())
+        .createdAt(savedTicket.getCreatedAt().toString())
         .build();
   }
 
