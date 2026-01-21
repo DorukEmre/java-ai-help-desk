@@ -2,7 +2,6 @@ package dev.dorukemre.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,14 +30,8 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
         .csrf(csrf -> csrf.disable()) // stateless JWT, no CSRF needed
-        .authorizeHttpRequests(auth -> auth
-            // public endpoints
-            .requestMatchers(HttpMethod.POST,
-                "/api/v1/user/login",
-                "/api/v1/user/register")
-            .permitAll()
-            // everything else requires auth
-            .anyRequest().authenticated())
+        .authorizeHttpRequests(auth -> auth // requests filtered in api gateway
+            .anyRequest().permitAll())
         .sessionManagement(sess -> sess.sessionCreationPolicy(
             SessionCreationPolicy.STATELESS))
         .build();
