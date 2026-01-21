@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 
 import HomePage from '@/pages/HomePage';
 import Page404 from "@/pages/Page404";
+import Login from "./pages/Login";
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
 
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
 
           {/* 404 / Fallback */}
           <Route path="*" element={<Page404 />} />
