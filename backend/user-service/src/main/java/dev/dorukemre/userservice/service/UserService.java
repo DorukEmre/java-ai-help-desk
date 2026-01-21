@@ -3,6 +3,7 @@ package dev.dorukemre.userservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,17 +31,24 @@ public class UserService {
   @Autowired
   private AuthenticationManager authenticationManager;
 
+  @Autowired
+  private JwtService jwtService;
+
   public AuthResponse login(LoginRequest request) {
     log.info("Logging in user: {}", request);
 
+    // Check username/password via UserDetailsService + PasswordEncoder
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+            request.getUsername(), request.getPassword()));
+
+    // Fetch user details from DB
     User user = userRepository
         .findByUsername(request.getUsername())
         .orElseThrow(() -> new BadCredentialsException("User not found with username: " + request.getUsername()));
 
-    if (!passwordEncoder.matches(request.getPassword(), user.getHashedPassword()))
-      throw new BadCredentialsException("Invalid password");
-
-    String accessToken = "accessToken";
+    // Generate JWT
+    String accessToken = jwtService.generateToken(user);
 
     return AuthResponse.builder()
         .id(user.getId())
@@ -54,20 +62,22 @@ public class UserService {
   public AuthResponse register(RegisterRequest request) {
     log.info("Registering user: {}", request);
 
+    // Check username available
     if (userRepository.existsByUsername(request.getUsername()))
       throw new UsernameAlreadyExistsException(request.getUsername());
 
-    String roleFromRequest = request.getRole();
+    // Check user role is valid
     Role role;
-
     try { // If conversion is successful, role is valid
-      role = Role.valueOf(roleFromRequest.toUpperCase());
+      role = Role.valueOf(request.getRole().toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Invalid role: " + roleFromRequest);
+      throw new IllegalArgumentException("Invalid role: " + request.getRole());
     }
 
+    // Hash password
     String hashedPassword = passwordEncoder.encode(request.getPassword());
 
+    // Save user to DB
     User user = User.builder()
         .username(request.getUsername())
         .fullname(request.getFullname())
@@ -76,7 +86,14 @@ public class UserService {
         .build();
     User savedUser = userRepository.save(user);
 
-    String accessToken = "accessToken";
+    // Authenticate immediately
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+            savedUser.getUsername(),
+            request.getPassword()));
+
+    // Generate JWT
+    String accessToken = jwtService.generateToken(savedUser);
 
     return AuthResponse.builder()
         .id(savedUser.getId())
