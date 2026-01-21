@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,19 +37,25 @@ public class TicketController {
   // @ApiResponse(responseCode = "", description = "")
   // })
   @GetMapping("/users/{userId}/tickets")
-  public List<Ticket> listTicketsByUserId(@PathVariable("userId") String userId) {
+  public List<Ticket> listTicketsByUserId(
+      @RequestHeader("X-User-Role") String headerUserRole,
+      @RequestHeader("X-User-Id") String headerUserId,
+      @PathVariable("userId") String pathUserId) {
     System.out.println("GET /api/v1/ticket/users/{userId}/tickets called");
 
-    return ticketService.listTicketsByUserId(userId);
+    return ticketService.listTicketsByUserId(headerUserRole, headerUserId, pathUserId);
   }
 
   // @Operation(summary = "Create a new ticket", description = "Creates a new
   // ticket.")
   @PostMapping(value = "/users/{userId}/tickets")
-  public ResponseEntity<TicketCreationResponse> createTicket(@Valid @RequestBody TicketCreationRequest request) {
+  public ResponseEntity<TicketCreationResponse> createTicket(
+      @RequestHeader("X-User-Id") String headerUserId,
+      @PathVariable("userId") String pathUserId,
+      @Valid @RequestBody TicketCreationRequest request) {
     System.out.println("POST /api/v1/ticket/users/{userId}/tickets called");
 
-    TicketCreationResponse response = ticketService.createTicket(request);
+    TicketCreationResponse response = ticketService.createTicket(headerUserId, pathUserId, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
