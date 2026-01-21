@@ -7,11 +7,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 
+import dev.dorukemre.apigateway.filter.JwtHeadersFilter;
+
 @Configuration
 public class TicketServiceRoute {
 
   @Value("${TICKET_BASE_URL}")
   private String baseUrl;
+
+  private final JwtHeadersFilter jwtHeadersFilter;
+
+  public TicketServiceRoute(JwtHeadersFilter jwtHeadersFilter) {
+    this.jwtHeadersFilter = jwtHeadersFilter;
+  }
 
   @Bean
   public RouteLocator ticketRoutes(RouteLocatorBuilder builder) {
@@ -25,13 +33,17 @@ public class TicketServiceRoute {
         .route("list-user-tickets", r -> r
             .path("/users/{userId}/tickets")
             .and().method(HttpMethod.GET)
-            .filters(f -> f.prefixPath("/api/v1/ticket"))
+            .filters(f -> f
+                .prefixPath("/api/v1/ticket")
+                .filter(jwtHeadersFilter))
             .uri(uri))
 
         .route("create-ticket", r -> r
             .path("/users/{userId}/tickets")
             .and().method(HttpMethod.POST)
-            .filters(f -> f.prefixPath("/api/v1/ticket"))
+            .filters(f -> f
+                .prefixPath("/api/v1/ticket")
+                .filter(jwtHeadersFilter))
             .uri(uri))
 
         // service desk user routes
