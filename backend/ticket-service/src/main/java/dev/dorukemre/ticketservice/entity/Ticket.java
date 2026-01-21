@@ -1,6 +1,7 @@
 package dev.dorukemre.ticketservice.entity;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -41,6 +42,10 @@ public class Ticket {
 
   @LastModifiedDate
   private Instant updatedAt;
+
+  private String agentId;
+
+  private List<TicketAction> actions;
 
   // @DBRef // To map to User entity instead of using userId
   // private User user;
