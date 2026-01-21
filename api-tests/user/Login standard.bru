@@ -1,0 +1,24 @@
+meta {
+  name: Login standard
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{BASE_URL}}/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "standard",
+    "password": "Standard1"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
