@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
 
@@ -13,15 +14,19 @@ import org.springframework.security.oauth2.server.resource.authentication.Reacti
 public class SecurityConfig {
 
   private final ReactiveJwtAuthenticationConverter jwtAuthenticationConverter;
+  private final CorsConfiguration corsConfiguration;
 
-  public SecurityConfig(ReactiveJwtAuthenticationConverter jwtAuthenticationConverter) {
+  public SecurityConfig(ReactiveJwtAuthenticationConverter jwtAuthenticationConverter,
+      CorsConfiguration corsConfiguration) {
     this.jwtAuthenticationConverter = jwtAuthenticationConverter;
+    this.corsConfiguration = corsConfiguration;
   }
 
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
     return http
+        .cors(cors -> cors.configurationSource(request -> corsConfiguration))
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
         .authorizeExchange(exchanges -> exchanges
             // public endpoints

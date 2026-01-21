@@ -14,23 +14,29 @@ public class CorsGlobalConfiguration {
   String origins;
 
   @Bean
-  public CorsWebFilter corsWebFilter() {
-
-    String[] allowedOrigins = origins.split(",");
-
+  public CorsConfiguration corsConfiguration() {
     CorsConfiguration corsConfig = new CorsConfiguration();
-    // Specify frontend URL instead of "*" for better security
+
     corsConfig.addAllowedOriginPattern("*");
+    // corsConfig.setAllowedOrigins(Arrays.asList(origins.split(",")));
     // for (String origin : allowedOrigins) {
     // corsConfig.addAllowedOrigin(origin);
     // }
     corsConfig.setAllowCredentials(true);
-
+    // corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE",
+    // "OPTIONS"));
+    // corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type",
+    // "X-Requested-With"));
     corsConfig.addAllowedMethod("*");
     corsConfig.addAllowedHeader("*");
 
+    return corsConfig;
+  }
+
+  @Bean
+  public CorsWebFilter corsWebFilter(CorsConfiguration corsConfiguration) {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", corsConfig);
+    source.registerCorsConfiguration("/**", corsConfiguration);
 
     return new CorsWebFilter(source);
   }
