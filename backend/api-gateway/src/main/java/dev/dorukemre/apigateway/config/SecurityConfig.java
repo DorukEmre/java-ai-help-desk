@@ -6,10 +6,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
+
+  private final ReactiveJwtAuthenticationConverter jwtAuthenticationConverter;
+
+  public SecurityConfig(ReactiveJwtAuthenticationConverter jwtAuthenticationConverter) {
+    this.jwtAuthenticationConverter = jwtAuthenticationConverter;
+  }
 
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -19,12 +26,25 @@ public class SecurityConfig {
         .authorizeExchange(exchanges -> exchanges
             // public endpoints
             .pathMatchers(HttpMethod.POST, "/login", "/register").permitAll()
-            .pathMatchers(HttpMethod.GET, "/tickets").permitAll()
-            // everything else requires auth
+
+            // standard user endpoints
+            .pathMatchers(HttpMethod.GET, "/users/{userId}/tickets")
+            .hasAnyRole("STANDARD_USER", "SERVICE_DESK_USER", "ADMIN")
+            .pathMatchers(HttpMethod.POST, "/users/{userId}/tickets")
+            .hasAnyRole("STANDARD_USER", "ADMIN")
+
+            // service desk user endpoints
+            .pathMatchers(HttpMethod.GET, "/tickets").hasAnyRole("SERVICE_DESK_USER", "ADMIN")
+
+            // admin endpoints
+            .pathMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+
+            // everything else requires any authentication
             .anyExchange().authenticated())
         // JWT validation
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
-        }))
+        .oauth2ResourceServer(oauth2 -> oauth2
+            .jwt(jwt -> jwt
+                .jwtAuthenticationConverter(jwtAuthenticationConverter)))
         .build();
   }
 
