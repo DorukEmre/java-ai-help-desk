@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.dorukemre.ticketservice.entity.Ticket;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
+import dev.dorukemre.ticketservice.response.TicketResponse;
 import dev.dorukemre.ticketservice.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +69,17 @@ public class TicketController {
     System.out.println("GET /api/v1/ticket/tickets called");
 
     return ticketService.listTickets();
+  }
+
+  // @Operation(summary = "Get ticket", description = "Retrieve given ticket.")
+  @GetMapping("/tickets/{ticketId}")
+  public TicketResponse getTicket(
+      @RequestHeader("X-User-Role") String userRole,
+      @RequestHeader("X-User-Id") String userId,
+      @PathVariable("ticketId") String ticketId) {
+    System.out.println("GET /api/v1/ticket/tickets called");
+
+    return ticketService.getTicket(userRole, userId, ticketId);
   }
 
 }

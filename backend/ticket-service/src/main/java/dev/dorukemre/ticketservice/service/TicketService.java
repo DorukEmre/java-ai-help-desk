@@ -12,6 +12,7 @@ import dev.dorukemre.ticketservice.entity.Ticket;
 import dev.dorukemre.ticketservice.repository.TicketRepository;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
+import dev.dorukemre.ticketservice.response.TicketResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,5 +68,23 @@ public class TicketService {
 
   public List<Ticket> listTickets() {
     return ticketRepository.findAll();
+  }
+
+  public TicketResponse getTicket(
+      String userRole, String userId, String ticketId) {
+    log.info("Getting ticket with id: {}", ticketId);
+    System.out.println("userRole: " + userRole + ", userId: " + userId);
+
+    Ticket ticket = ticketRepository.findById(ticketId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+
+    return TicketResponse.builder()
+        .description(ticket.getDescription())
+        .status(ticket.getStatus())
+        .createdAt(ticket.getCreatedAt().toString())
+        .updatedAt(ticket.getUpdatedAt().toString())
+        .agentId(ticket.getAgentId())
+        .actions(ticket.getActions())
+        .build();
   }
 }

@@ -46,12 +46,28 @@ public class TicketServiceRoute {
                 .filter(jwtHeadersFilter))
             .uri(uri))
 
+        .route("get-ticket", r -> r
+            .path("/tickets/{ticketId}")
+            .and().method(HttpMethod.GET)
+            .filters(f -> f
+                .prefixPath("/api/v1/ticket")
+                .filter(jwtHeadersFilter))
+            .uri(uri))
+
         // service desk user routes
 
         .route("list-all-tickets", r -> r
             .path("/tickets")
             .and().method(HttpMethod.GET)
             .filters(f -> f.prefixPath("/api/v1/ticket"))
+            .uri(uri))
+
+        .route("update-ticket", r -> r
+            .path("/tickets/{ticketId}")
+            .and().method(HttpMethod.POST)
+            .filters(f -> f
+                .prefixPath("/api/v1/ticket")
+                .filter(jwtHeadersFilter))
             .uri(uri))
 
         .build();
