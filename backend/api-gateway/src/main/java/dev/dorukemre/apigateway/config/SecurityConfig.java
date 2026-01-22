@@ -9,6 +9,13 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
 
+/**
+ * Configuration class for setting up security in the application using
+ * Spring Security.
+ * 
+ * It sets up CORS configuration, CSRF protection, and access control for
+ * different endpoints based on user roles and authentication.
+ */
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
@@ -30,6 +37,7 @@ public class SecurityConfig {
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
         .authorizeExchange(exchanges -> exchanges
             // public endpoints
+            .pathMatchers(HttpMethod.GET, "/").permitAll()
             .pathMatchers(HttpMethod.POST, "/login", "/register").permitAll()
 
             // standard user endpoints

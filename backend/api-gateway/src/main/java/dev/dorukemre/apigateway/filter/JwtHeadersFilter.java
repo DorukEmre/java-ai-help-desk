@@ -11,6 +11,12 @@ import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Adds JWT claims as headers to the incoming HTTP request.
+ * 
+ * This filter extracts the user ID and role from the authenticated JWT and
+ * attaches them as custom headers (X-User-Id and X-User-Role) to the request.
+ */
 @Component
 public class JwtHeadersFilter implements GatewayFilter, Ordered {
 
