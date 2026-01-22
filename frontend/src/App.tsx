@@ -1,11 +1,15 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { Container } from "react-bootstrap";
+
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 import Header from '@/components/Header';
 
 import HomePage from '@/pages/HomePage';
 import Page404 from "@/pages/Page404";
 import Login from "@/pages/Login";
+import ViewTickets from "@/pages/ViewTickets";
+import CreateTickets from "@/pages/CreateTicket";
 
 function App() {
 
@@ -20,7 +24,15 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
 
-          {/* 404 / Fallback */}
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
+
+            <Route path="/tickets/view" element={<ViewTickets />} />
+            <Route path="/tickets/create" element={<CreateTickets />} />
+
+          </Route>
+
+          {/* 404 - Fallback */}
           <Route path="*" element={<Page404 />} />
 
         </Routes>
