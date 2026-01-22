@@ -1,0 +1,94 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+import { useAuth } from "@/context/AuthContext";
+import { useAuthApi } from "@/hooks/useAuthApi";
+import type { Ticket } from "@/types/ticket";
+import { Badge, ListGroup } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
+const ViewTickets = () => {
+
+  const [error, setError] = useState<string | null>(null);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+
+  const { user } = useAuth();
+  const authApi = useAuthApi();
+
+
+  useEffect(() => {
+
+    const getTickets = async () => {
+
+      try {
+
+        const url = `/users/${user?.id}/tickets`;
+
+        const response = await authApi.get(url,
+          {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+          },);
+        console.log("Response.data:", response.data);
+
+        setTickets(response.data);
+
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          console.error("Unexpected error:", error);
+          if (error.response.data.message)
+            setError(error.response.data.message);
+          else if (error.response.status)
+            setError("Unexpected error: " + error.response.status.toString());
+          else
+            setError('An unexpected error occurred.');
+
+        } else {
+          setError('An unexpected error occurred.');
+          console.error("Unexpected error:", error);
+        }
+      }
+    }
+    getTickets();
+
+  }, [authApi, user?.id]);
+
+  return (
+    <>
+      <h1 className="visually-hidden">View Tickets</h1>
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {tickets.length > 0 ? (
+        <ListGroup>
+
+          {tickets.map((ticket) => (
+            <ListGroup.Item key={ticket.id} className="d-flex justify-content-between align-items-start">
+
+              <div className="ms-2 me-auto">
+                <Link className="fw-bold text-body d-block" to={`/tickets/${ticket.id}`}>
+                  {ticket.description}
+                </Link>
+                {/* <small>User ID: {ticket.userId}</small> */}
+              </div>
+
+              <div className="text-end">
+                <Badge bg="secondary" className="mb-1">{ticket.status}</Badge>
+                <div>
+                  <small>{new Date(ticket.createdAt).toLocaleString()}</small>
+                </div>
+              </div>
+
+            </ListGroup.Item>
+          ))}
+
+        </ListGroup>
+      ) : (
+        <p>No tickets found.</p>
+      )}
+
+    </>
+  );
+}
+
+export default ViewTickets
