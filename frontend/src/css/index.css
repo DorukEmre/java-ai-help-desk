@@ -38,3 +38,15 @@ h6 {
   font-weight: 600;
   line-height: 1.2;
 }
+
+.nav-logout-button {
+  /* background: none; */
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-logout-button:hover,
+.nav-logout-button:focus {
+  text-decoration: underline;
+}

@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom"
 import { Container, Nav, Navbar } from 'react-bootstrap';
+import { useAuth } from "@/context/AuthContext";
 
 function Header() {
-  // const { auth } = useAuth()
-  // const isUserLoggedIn = auth?.accessToken
-  const isUserLoggedIn = false;
+  const { user, token, clearAuthSession } = useAuth();
+
+  const isUserLoggedIn = (user && token) ? true : false;
+
+  const handleLogout = () => {
+    clearAuthSession();
+    // navigate("/login");
+  };
 
   return (
     <header className="border-bottom position-sticky top-0 start-0">
@@ -16,11 +22,22 @@ function Header() {
             <Nav className="me-auto">
               {isUserLoggedIn ? (
                 <>
-                  <Nav.Link as={Link} to="/tickets/create">Create Ticket</Nav.Link>
-                  <Nav.Link as={Link} to="/tickets/view">View Tickets</Nav.Link>
+                  <Nav.Item>
+                    <Nav.Link as={Link} to="/tickets/create">Create Ticket</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link as={Link} to="/tickets/view">View Tickets</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link as="button" onClick={handleLogout} className="nav-logout-button">
+                      Logout
+                    </Nav.Link>
+                  </Nav.Item>
                 </>
               ) : (
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                </Nav.Item>
               )}
             </Nav>
           </Navbar.Collapse>
