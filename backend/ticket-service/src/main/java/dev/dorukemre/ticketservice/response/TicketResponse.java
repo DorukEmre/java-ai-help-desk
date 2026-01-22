@@ -31,4 +31,6 @@ public class TicketResponse {
 
   private List<TicketAction> actions;
 
+  private List<String> tags;
+
 }

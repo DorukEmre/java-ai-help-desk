@@ -47,6 +47,8 @@ public class Ticket {
 
   private List<TicketAction> actions;
 
+  private List<String> tags;
+
   // @DBRef // To map to User entity instead of using userId
   // private User user;
 

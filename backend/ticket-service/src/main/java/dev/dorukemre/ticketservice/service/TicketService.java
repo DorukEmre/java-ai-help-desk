@@ -85,6 +85,7 @@ public class TicketService {
         .updatedAt(ticket.getUpdatedAt().toString())
         .agentId(ticket.getAgentId())
         .actions(ticket.getActions())
+        .tags(ticket.getTags())
         .build();
   }
 }
