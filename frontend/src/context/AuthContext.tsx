@@ -7,6 +7,7 @@ interface AuthContextValue {
   token: string | null;
   setAuthSession: (data: LoginResponse) => void;
   clearAuthSession: () => void;
+  isUserLoggedIn: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -44,8 +45,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("user");
   };
 
+  // User is logged in if user && token
+  const isUserLoggedIn = (user && token) ? true : false;
+
   return (
-    <AuthContext.Provider value={{ user, token, setAuthSession, clearAuthSession }}>
+    <AuthContext.Provider value={{ user, token, setAuthSession, clearAuthSession, isUserLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );
