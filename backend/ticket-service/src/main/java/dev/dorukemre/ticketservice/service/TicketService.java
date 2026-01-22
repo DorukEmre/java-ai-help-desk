@@ -2,13 +2,14 @@ package dev.dorukemre.ticketservice.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import dev.dorukemre.ticketservice.entity.Role;
 import dev.dorukemre.ticketservice.entity.Ticket;
+import dev.dorukemre.ticketservice.event.TicketCreatedEvent;
 import dev.dorukemre.ticketservice.repository.TicketRepository;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
@@ -21,8 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TicketService {
 
-  @Autowired
   private final TicketRepository ticketRepository;
+
+  private final ApplicationEventPublisher publisher;
 
   public TicketCreationResponse createTicket(
       String headerUserId, String pathUserId, TicketCreationRequest request) {
@@ -37,6 +39,9 @@ public class TicketService {
     ticket.setDescription(request.getDescription());
     ticket.setUserId(headerUserId);
     Ticket savedTicket = ticketRepository.save(ticket);
+
+    // Publish ticket creation event
+    publisher.publishEvent(new TicketCreatedEvent(savedTicket));
 
     return TicketCreationResponse.builder()
         .description(savedTicket.getDescription())
