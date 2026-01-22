@@ -9,7 +9,8 @@ import HomePage from '@/pages/HomePage';
 import Page404 from "@/pages/Page404";
 import Login from "@/pages/Login";
 import ViewTickets from "@/pages/ViewTickets";
-import CreateTickets from "@/pages/CreateTicket";
+import CreateTicket from "@/pages/CreateTicket";
+import ViewTicketDetails from "@/pages/ViewTicketDetails";
 
 function App() {
 
@@ -28,7 +29,8 @@ function App() {
           <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
 
             <Route path="/tickets/view" element={<ViewTickets />} />
-            <Route path="/tickets/create" element={<CreateTickets />} />
+            <Route path="/tickets/create" element={<CreateTicket />} />
+            <Route path="/tickets/:ticketId" element={<ViewTicketDetails />} />
 
           </Route>
 
