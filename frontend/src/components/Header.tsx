@@ -1,15 +1,15 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { useAuth } from "@/context/AuthContext";
 
 function Header() {
-  const { user, token, clearAuthSession } = useAuth();
+  const navigate = useNavigate();
 
-  const isUserLoggedIn = (user && token) ? true : false;
+  const { clearAuthSession, isUserLoggedIn } = useAuth();
 
   const handleLogout = () => {
     clearAuthSession();
-    // navigate("/login");
+    navigate("/");
   };
 
   return (

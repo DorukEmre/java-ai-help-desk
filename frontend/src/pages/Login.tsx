@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addBaseUrl } from '@/utils/globals';
 
@@ -6,13 +6,25 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Container } from 'react-bootstrap';
 import { useAuth } from '@/context/AuthContext';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation()
+  // To take the user back to where they came from after log in
+  const from = location.state?.from?.pathname || '/'
+
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const { setAuthSession } = useAuth();
+  const { setAuthSession, isUserLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isUserLoggedIn) {
+      navigate('/', { state: { from: location }, replace: true });
+    }
+  }, [isUserLoggedIn, navigate, location]);
 
   const isValidCredentials = (username: string, password: string): boolean => {
     return (username.length >= 1 && username.length <= 50
@@ -43,6 +55,9 @@ const Login = () => {
       console.log("Login successful:", response.data);
 
       setAuthSession(response.data);
+
+      // Take user back where they came from
+      navigate(from, { replace: true })
 
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
