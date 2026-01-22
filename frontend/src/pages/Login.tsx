@@ -5,11 +5,14 @@ import { addBaseUrl } from '@/utils/globals';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Container } from 'react-bootstrap';
+import { useAuth } from '@/context/AuthContext';
 
 const Login = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+
+  const { setAuthSession } = useAuth();
 
   const isValidCredentials = (username: string, password: string): boolean => {
     return (username.length >= 1 && username.length <= 50
@@ -32,12 +35,15 @@ const Login = () => {
       console.log("url:", url);
 
       const response = await axios.post(url,
-        { username, password, },
+        { username, password },
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         },);
       console.log("Login successful:", response.data);
+
+      setAuthSession(response.data);
+
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         setError(error.response.data.message);
@@ -50,7 +56,6 @@ const Login = () => {
 
   return (
     <Container fluid className="d-flex flex-column align-items-center gap-2" style={{ maxWidth: '600px' }}>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <div>
         <p className="text-muted">
@@ -69,6 +74,8 @@ const Login = () => {
           Password: Admin1
         </p>
       </div>
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <Form onSubmit={handleSubmit} className="w-100" style={{ maxWidth: '366px' }}>
         <Form.Group className="mb-3" controlId="formUsername">
