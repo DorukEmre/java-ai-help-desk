@@ -43,15 +43,20 @@ public class SecurityConfig {
             // standard user endpoints
             .pathMatchers(HttpMethod.GET, "/users/{userId}/tickets")
             .hasAnyRole("STANDARD_USER", "SERVICE_DESK_USER", "ADMIN")
+
             .pathMatchers(HttpMethod.POST, "/users/{userId}/tickets")
             .hasAnyRole("STANDARD_USER", "ADMIN")
+
             .pathMatchers(HttpMethod.GET, "/tickets/{ticketId}")
             .hasAnyRole("STANDARD_USER", "SERVICE_DESK_USER", "ADMIN")
 
             // service desk user endpoints
-            .pathMatchers(HttpMethod.GET, "/tickets").hasAnyRole("SERVICE_DESK_USER", "ADMIN")
-            .pathMatchers(HttpMethod.POST, "/tickets/{ticketId}")
+            .pathMatchers(HttpMethod.GET, "/tickets")
             .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
+
+            .pathMatchers(HttpMethod.PATCH, "/tickets/{ticketId}")
+            .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
+
             .pathMatchers(HttpMethod.GET, "/users")
             .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
 

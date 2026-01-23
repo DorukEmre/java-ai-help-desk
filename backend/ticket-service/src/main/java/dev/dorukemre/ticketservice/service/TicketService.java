@@ -12,6 +12,7 @@ import dev.dorukemre.ticketservice.entity.Ticket;
 import dev.dorukemre.ticketservice.event.TicketCreatedEvent;
 import dev.dorukemre.ticketservice.repository.TicketRepository;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
+import dev.dorukemre.ticketservice.request.UpdateTicketRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,4 +99,22 @@ public class TicketService {
 
     return ticket;
   }
+
+  public Ticket updateTicket(String ticketId, UpdateTicketRequest request) {
+    Ticket ticket = ticketRepository.findById(ticketId)
+        .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+    if (request.getStatus() != null) {
+      ticket.setStatus(request.getStatus());
+    }
+
+    if (request.getAgentId() != null) {
+      // check with user-service that assigned agent exists and has correct role
+
+      ticket.setAgentId(request.getAgentId());
+    }
+
+    return ticketRepository.save(ticket);
+  }
+
 }

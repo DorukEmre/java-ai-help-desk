@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.dorukemre.ticketservice.entity.Ticket;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
+import dev.dorukemre.ticketservice.request.UpdateTicketRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
 import dev.dorukemre.ticketservice.service.TicketService;
 import jakarta.validation.Valid;
@@ -79,6 +81,16 @@ public class TicketController {
     System.out.println("GET /api/v1/ticket/tickets called");
 
     return ticketService.getTicket(userRole, userId, ticketId);
+  }
+
+  // @Operation(summary = "Update ticket", description = "Update given ticket.")
+  @PatchMapping("/tickets/{ticketId}")
+  public Ticket updateTicket(
+      @PathVariable("ticketId") String ticketId,
+      @RequestBody UpdateTicketRequest request) {
+    System.out.println("PATCH /api/v1/ticket/tickets called");
+
+    return ticketService.updateTicket(ticketId, request);
   }
 
 }

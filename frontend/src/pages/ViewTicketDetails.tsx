@@ -19,7 +19,6 @@ const ViewTicketDetails = () => {
   const authApi = useAuthApi();
 
 
-
   useEffect(() => {
 
     const getAgentsList = async () => {
@@ -29,8 +28,7 @@ const ViewTicketDetails = () => {
         const url = `/users?role=SERVICE_DESK_USER`;
 
         const response = await authApi.get(url);
-
-        console.log("Response.data:", response.data);
+        console.log("getAgentsList:", response.data);
 
         setAgents(response.data);
 
@@ -65,8 +63,7 @@ const ViewTicketDetails = () => {
         const url = `/tickets/${ticketId}`;
 
         const response = await authApi.get(url);
-
-        console.log("Response.data:", response.data);
+        console.log("getTicket:", response.data);
 
         setTicket(response.data);
 
@@ -89,6 +86,36 @@ const ViewTicketDetails = () => {
     getTicket();
 
   }, [authApi, ticketId]);
+
+  const handleUpdate = async (status: string, agentId?: string) => {
+    console.log("Updating ticket:", { status, agentId });
+
+
+    try {
+
+      const url = `/tickets/${ticketId}`;
+
+      const response = await authApi.patch(url, { status, agentId });
+      console.log("Updated ticket:", response.data);
+
+      setTicket(response.data);
+
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Unexpected error:", error);
+        if (error.response.data.message)
+          setError(error.response.data.message);
+        else if (error.response.status)
+          setError("Unexpected error: " + error.response.status.toString());
+        else
+          setError('An unexpected error occurred.');
+
+      } else {
+        setError('An unexpected error occurred.');
+        console.error("Unexpected error:", error);
+      }
+    }
+  }
 
   return (
     <>
@@ -114,10 +141,7 @@ const ViewTicketDetails = () => {
               agents={agents}
               currentStatus={ticket.status}
               currentAgentId={ticket.agentId || ""}
-              onUpdate={(status, agentId) => {
-                // Call API to update ticket
-                console.log("Updating ticket:", { status, agentId });
-              }}
+              onUpdate={handleUpdate}
             />
           ) : (
             <>

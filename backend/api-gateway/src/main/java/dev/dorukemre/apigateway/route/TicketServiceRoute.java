@@ -64,7 +64,7 @@ public class TicketServiceRoute {
 
         .route("update-ticket", r -> r
             .path("/tickets/{ticketId}")
-            .and().method(HttpMethod.POST)
+            .and().method(HttpMethod.PATCH)
             .filters(f -> f
                 .prefixPath("/api/v1/ticket")
                 .filter(jwtHeadersFilter))
