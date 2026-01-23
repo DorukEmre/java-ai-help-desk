@@ -16,7 +16,7 @@ const Header = () => {
   };
 
   return (
-    <header className="border-bottom position-sticky top-0 start-0">
+    <header className="border-bottom position-sticky top-0 start-0 z-3">
       <Navbar expand="lg" className="bg-body-secondary">
         <Container>
           <Navbar.Brand as={Link} to="/">Service Desk</Navbar.Brand>
