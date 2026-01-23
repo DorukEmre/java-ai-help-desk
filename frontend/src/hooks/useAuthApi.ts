@@ -1,7 +1,9 @@
-import axios from "axios";
-import { useAuth } from "@/context/AuthContext";
-import { getBaseUrl } from "@/utils/globals";
 import { useMemo } from "react";
+import axios from "axios";
+
+import { useAuth } from "@/auth/useAuth";
+import { getBaseUrl } from "@/utils/globals";
+
 
 export const useAuthApi = () => {
   const { token } = useAuth();

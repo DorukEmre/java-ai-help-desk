@@ -1,8 +1,11 @@
 import { Link, useNavigate } from "react-router-dom"
-import { Container, Nav, Navbar } from 'react-bootstrap';
-import { useAuth } from "@/context/AuthContext";
 
-function Header() {
+import { Container, Nav, Navbar } from 'react-bootstrap';
+
+import { useAuth } from "@/auth/useAuth";
+
+
+const Header = () => {
   const navigate = useNavigate();
 
   const { clearAuthSession, isUserLoggedIn } = useAuth();

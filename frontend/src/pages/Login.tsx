@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { addBaseUrl } from '@/utils/globals';
-
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { Container } from 'react-bootstrap';
-import { useAuth } from '@/context/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+import { Container, Form, Button } from 'react-bootstrap';
+
+import { addBaseUrl } from '@/utils/globals';
+import { useAuth } from '@/auth/useAuth';
+
 
 const Login = () => {
   const navigate = useNavigate();

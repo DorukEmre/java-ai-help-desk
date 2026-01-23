@@ -10,7 +10,8 @@ import '@/css/index.css'
 
 import App from '@/App.tsx'
 import queryClient from '@/config/queryClient';
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider } from '@/auth/AuthProvider';
+
 
 createRoot(document.getElementById('root')!).render(
 

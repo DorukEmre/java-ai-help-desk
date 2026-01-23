@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
-import { useAuth } from "@/context/AuthContext";
+import { Badge, ListGroup } from "react-bootstrap";
+
+import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { Ticket } from "@/types/ticket";
-import { Badge, ListGroup } from "react-bootstrap";
-import { Link } from "react-router-dom";
+
 
 const ViewTickets = () => {
 
