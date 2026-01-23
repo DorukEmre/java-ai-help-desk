@@ -1,5 +1,7 @@
 import { useAuth } from "@/auth/useAuth";
+import { TicketAssignment } from "@/components/TicketAssignment";
 import { useAuthApi } from "@/hooks/useAuthApi";
+import type { User } from "@/types/auth";
 import type { Ticket } from "@/types/ticket";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -11,10 +13,48 @@ const ViewTicketDetails = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [agents, setAgents] = useState<User[]>([]);
 
   const { user } = useAuth();
   const authApi = useAuthApi();
 
+
+
+  useEffect(() => {
+
+    const getAgentsList = async () => {
+
+      try {
+
+        const url = `/users?role=SERVICE_DESK_USER`;
+
+        const response = await authApi.get(url);
+
+        console.log("Response.data:", response.data);
+
+        setAgents(response.data);
+
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          console.error("Unexpected error:", error);
+          if (error.response.data.message)
+            setError(error.response.data.message);
+          else if (error.response.status)
+            setError("Unexpected error: " + error.response.status.toString());
+          else
+            setError('An unexpected error occurred.');
+
+        } else {
+          setError('An unexpected error occurred.');
+          console.error("Unexpected error:", error);
+        }
+      }
+    }
+
+    if (user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN")
+      getAgentsList();
+
+  }, [authApi, user?.role]);
 
   useEffect(() => {
 
@@ -48,7 +88,7 @@ const ViewTicketDetails = () => {
     }
     getTicket();
 
-  }, [authApi, user?.id, ticketId]);
+  }, [authApi, ticketId]);
 
   return (
     <>
@@ -68,9 +108,28 @@ const ViewTicketDetails = () => {
             <div>{ticket.description}</div>
           </ListGroup.Item>
 
-          <ListGroup.Item as="li">
-            <strong>Status:</strong> {ticket.status}
-          </ListGroup.Item>
+
+          {(user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN") ? (
+            <TicketAssignment
+              agents={agents}
+              currentStatus={ticket.status}
+              currentAgentId={ticket.agentId || ""}
+              onUpdate={(status, agentId) => {
+                // Call API to update ticket
+                console.log("Updating ticket:", { status, agentId });
+              }}
+            />
+          ) : (
+            <>
+              <ListGroup.Item as="li">
+                <strong>Status:</strong> {ticket.status}
+              </ListGroup.Item>
+              <ListGroup.Item as="li">
+                <strong>Assigned Agent:</strong>{" "}
+                {ticket.agentId ?? "Unassigned"}
+              </ListGroup.Item>
+            </>
+          )}
 
           <ListGroup.Item as="li">
             <strong>Created At:</strong>{" "}
@@ -86,10 +145,6 @@ const ViewTicketDetails = () => {
             <strong>Created By (User ID):</strong> {ticket.userId}
           </ListGroup.Item>
 
-          <ListGroup.Item as="li">
-            <strong>Assigned Agent:</strong>{" "}
-            {ticket.agentId ?? "Unassigned"}
-          </ListGroup.Item>
 
           <ListGroup.Item as="li">
             <strong>Tags:</strong>{" "}
