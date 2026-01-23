@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import dev.dorukemre.ticketservice.client.UserServiceClient;
 import dev.dorukemre.ticketservice.entity.Role;
 import dev.dorukemre.ticketservice.entity.Ticket;
 import dev.dorukemre.ticketservice.event.TicketCreatedEvent;
@@ -23,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TicketService {
 
   private final TicketRepository ticketRepository;
+
+  private final UserServiceClient userServiceClient;
 
   private final ApplicationEventPublisher publisher;
 
@@ -101,6 +104,8 @@ public class TicketService {
   }
 
   public Ticket updateTicket(String ticketId, UpdateTicketRequest request) {
+    log.info("Updating ticket with id: {}, {}", ticketId, request);
+
     Ticket ticket = ticketRepository.findById(ticketId)
         .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
@@ -110,6 +115,7 @@ public class TicketService {
 
     if (request.getAgentId() != null) {
       // check with user-service that assigned agent exists and has correct role
+      userServiceClient.checkAgent(request.getAgentId());
 
       ticket.setAgentId(request.getAgentId());
     }

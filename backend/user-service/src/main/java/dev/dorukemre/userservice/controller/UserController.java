@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,6 +72,18 @@ public class UserController {
     System.out.println("GET /api/v1/user/users called with role=" + role);
 
     return userService.listUsers(role);
+  }
+
+  // @Operation(summary = "Check user is a valid agent", description = "Checks if
+  // the user exists and has role SERVICE_DESK_USER or ADMIN")
+  @GetMapping("/users/{agentId}/check")
+  public ResponseEntity<Void> checkAgent(@PathVariable("agentId") String agentId) {
+    System.out.println("GET /api/v1/user/users/{agentId}/check called");
+
+    userService.checkAgent(agentId);
+
+    return ResponseEntity.ok().build();
+
   }
 
 }

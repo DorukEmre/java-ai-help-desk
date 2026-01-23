@@ -78,7 +78,7 @@ public class TicketController {
       @RequestHeader("X-User-Role") String userRole,
       @RequestHeader("X-User-Id") String userId,
       @PathVariable("ticketId") String ticketId) {
-    System.out.println("GET /api/v1/ticket/tickets called");
+    System.out.println("GET /api/v1/ticket/tickets/{ticketId} called");
 
     return ticketService.getTicket(userRole, userId, ticketId);
   }
@@ -88,7 +88,7 @@ public class TicketController {
   public Ticket updateTicket(
       @PathVariable("ticketId") String ticketId,
       @RequestBody UpdateTicketRequest request) {
-    System.out.println("PATCH /api/v1/ticket/tickets called");
+    System.out.println("PATCH /api/v1/ticket/tickets/{ticketId} called");
 
     return ticketService.updateTicket(ticketId, request);
   }

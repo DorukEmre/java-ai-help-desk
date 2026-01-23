@@ -1,5 +1,6 @@
 package dev.dorukemre.userservice.service;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import dev.dorukemre.userservice.entity.Role;
 import dev.dorukemre.userservice.entity.User;
+import dev.dorukemre.userservice.exception.InvalidAgentRoleException;
+import dev.dorukemre.userservice.exception.UserNotFoundException;
 import dev.dorukemre.userservice.exception.UsernameAlreadyExistsException;
 import dev.dorukemre.userservice.repository.UserRepository;
 import dev.dorukemre.userservice.request.LoginRequest;
@@ -99,6 +102,7 @@ public class UserService {
   }
 
   public List<User> listUsers(String roleStr) {
+    log.info("Listing users");
 
     if (roleStr != null && !roleStr.isBlank()) {
       Role role;
@@ -111,6 +115,16 @@ public class UserService {
       return userRepository.findAllByRole(role);
     }
     return userRepository.findAll();
+  }
+
+  public void checkAgent(String agentId) {
+    log.info("Checking agent: {}", agentId);
+
+    User user = userRepository.findById(agentId).orElseThrow(() -> new UserNotFoundException(agentId));
+
+    if (!EnumSet.of(Role.SERVICE_DESK_USER, Role.ADMIN).contains(user.getRole())) {
+      throw new InvalidAgentRoleException(agentId);
+    }
   }
 
 }
