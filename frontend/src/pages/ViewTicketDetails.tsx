@@ -10,7 +10,7 @@ const ViewTicketDetails = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
 
   const [error, setError] = useState<string | null>(null);
-  const [ticket, setTicket] = useState<Ticket>();
+  const [ticket, setTicket] = useState<Ticket | null>(null);
 
   const { user } = useAuth();
   const authApi = useAuthApi();
@@ -24,11 +24,8 @@ const ViewTicketDetails = () => {
 
         const url = `/tickets/${ticketId}`;
 
-        const response = await authApi.get(url,
-          {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true,
-          },);
+        const response = await authApi.get(url);
+
         console.log("Response.data:", response.data);
 
         setTicket(response.data);
@@ -51,7 +48,7 @@ const ViewTicketDetails = () => {
     }
     getTicket();
 
-  }, [authApi, user?.id]);
+  }, [authApi, user?.id, ticketId]);
 
   return (
     <>

@@ -44,14 +44,10 @@ const Login = () => {
 
       const url = addBaseUrl("/login");
 
-      console.log("url:", url);
-
       const response = await axios.post(url,
         { username, password },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        },);
+        { headers: { 'Content-Type': 'application/json' } }
+      );
       console.log("Login successful:", response.data);
 
       setAuthSession(response.data);
@@ -90,7 +86,7 @@ const Login = () => {
         </p>
       </div>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="text-danger">{error}</p>}
 
       <Form onSubmit={handleSubmit} className="w-100" style={{ maxWidth: '366px' }}>
         <Form.Group className="mb-3" controlId="formUsername">
