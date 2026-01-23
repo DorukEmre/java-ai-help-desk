@@ -15,6 +15,13 @@ export interface TicketAction {
 }
 
 
+export interface TicketCreationResponse {
+  id: string;
+  description: string;
+  status: string;
+  createdAt: string;
+}
+
 export interface Ticket {
   id: string;
   userId: string;

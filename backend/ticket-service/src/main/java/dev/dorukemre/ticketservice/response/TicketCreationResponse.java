@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TicketCreationResponse {
 
+  @NotBlank(message = "Ticket id is required")
+  private String id;
+
   @NotBlank(message = "Description is required")
   private String description;
 

@@ -43,6 +43,7 @@ public class TicketService {
     publisher.publishEvent(new TicketCreatedEvent(savedTicket));
 
     return TicketCreationResponse.builder()
+        .id(savedTicket.getId())
         .description(savedTicket.getDescription())
         .status(savedTicket.getStatus())
         .createdAt(savedTicket.getCreatedAt().toString())
