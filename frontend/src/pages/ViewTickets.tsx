@@ -59,7 +59,7 @@ const ViewTickets = () => {
     <>
       <h1 className="visually-hidden">View Tickets</h1>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="text-danger">{error}</p>}
 
       {tickets.length > 0 ? (
         <ListGroup as="ul">
