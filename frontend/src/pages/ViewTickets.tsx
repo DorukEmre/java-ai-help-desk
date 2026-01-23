@@ -20,11 +20,9 @@ const ViewTickets = () => {
 
   useEffect(() => {
 
-    const getTickets = async () => {
+    const getTickets = async (url: string) => {
 
       try {
-
-        const url = `/users/${user?.id}/tickets`;
 
         const response = await authApi.get(url,
           {
@@ -51,9 +49,16 @@ const ViewTickets = () => {
         }
       }
     }
-    getTickets();
+    let url: string;
 
-  }, [authApi, user?.id]);
+    if (user?.role == "STANDARD_USER")
+      url = `/users/${user?.id}/tickets`;
+    else
+      url = `/tickets`;
+
+    getTickets(url);
+
+  }, [authApi, user?.id, user?.role]);
 
   return (
     <>
