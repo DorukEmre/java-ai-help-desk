@@ -62,10 +62,10 @@ const ViewTickets = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {tickets.length > 0 ? (
-        <ListGroup>
+        <ListGroup as="ul">
 
           {tickets.map((ticket) => (
-            <ListGroup.Item key={ticket.id} className="d-flex justify-content-between align-items-start">
+            <ListGroup.Item as="li" key={ticket.id} className="d-flex justify-content-between align-items-start">
 
               <div className="ms-2 me-auto">
                 <Link className="fw-bold text-body d-block" to={`/tickets/${ticket.id}`}>
