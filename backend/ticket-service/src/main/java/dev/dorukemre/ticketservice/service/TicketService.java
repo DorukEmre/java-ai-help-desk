@@ -13,7 +13,6 @@ import dev.dorukemre.ticketservice.event.TicketCreatedEvent;
 import dev.dorukemre.ticketservice.repository.TicketRepository;
 import dev.dorukemre.ticketservice.request.TicketCreationRequest;
 import dev.dorukemre.ticketservice.response.TicketCreationResponse;
-import dev.dorukemre.ticketservice.response.TicketResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,7 +74,7 @@ public class TicketService {
     return ticketRepository.findAll();
   }
 
-  public TicketResponse getTicket(
+  public Ticket getTicket(
       String userRole, String userId, String ticketId) {
     log.info("Getting ticket with id: {}", ticketId);
     System.out.println("userRole: " + userRole + ", userId: " + userId);
@@ -83,14 +82,19 @@ public class TicketService {
     Ticket ticket = ticketRepository.findById(ticketId)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-    return TicketResponse.builder()
-        .description(ticket.getDescription())
-        .status(ticket.getStatus())
-        .createdAt(ticket.getCreatedAt().toString())
-        .updatedAt(ticket.getUpdatedAt().toString())
-        .agentId(ticket.getAgentId())
-        .actions(ticket.getActions())
-        .tags(ticket.getTags())
-        .build();
+    Role role;
+    try {
+      role = Role.valueOf(userRole);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid role");
+    }
+
+    // Standard user can only see its own ticket
+    if (!userId.equals(ticket.getUserId())
+        && role != Role.SERVICE_DESK_USER && role != Role.ADMIN) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User ID mismatch");
+    }
+
+    return ticket;
   }
 }
