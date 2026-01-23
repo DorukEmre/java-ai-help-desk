@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.dorukemre.userservice.entity.User;
@@ -66,10 +67,10 @@ public class UserController {
   // @Operation(summary = "List all users", description = "Retrieves all
   // users.")
   @GetMapping("/users")
-  public List<User> listUsers() {
-    System.out.println("GET /api/v1/user/users called");
+  public List<User> listUsers(@RequestParam(name = "role", required = false) String role) {
+    System.out.println("GET /api/v1/user/users called with role=" + role);
 
-    return userService.listUsers();
+    return userService.listUsers(role);
   }
 
 }

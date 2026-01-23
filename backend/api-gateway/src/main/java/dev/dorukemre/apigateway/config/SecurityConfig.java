@@ -52,9 +52,10 @@ public class SecurityConfig {
             .pathMatchers(HttpMethod.GET, "/tickets").hasAnyRole("SERVICE_DESK_USER", "ADMIN")
             .pathMatchers(HttpMethod.POST, "/tickets/{ticketId}")
             .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
+            .pathMatchers(HttpMethod.GET, "/users")
+            .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
 
             // admin endpoints
-            .pathMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
 
             // everything else requires any authentication
             .anyExchange().authenticated())

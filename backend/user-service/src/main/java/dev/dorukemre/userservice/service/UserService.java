@@ -98,9 +98,18 @@ public class UserService {
         .build();
   }
 
-  public List<User> listUsers() {
-    log.info("Listing all users");
+  public List<User> listUsers(String roleStr) {
 
+    if (roleStr != null && !roleStr.isBlank()) {
+      Role role;
+      try {
+        role = Role.valueOf(roleStr.toUpperCase());
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException("Invalid role: " + roleStr);
+      }
+
+      return userRepository.findAllByRole(role);
+    }
     return userRepository.findAll();
   }
 
