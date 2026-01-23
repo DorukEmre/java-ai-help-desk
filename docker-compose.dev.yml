@@ -81,6 +81,7 @@ services:
       SERVER_PORT: "8082"
       SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
       API_SERVER_URL: ${API_SERVER_URL_LOCAL}
+      USER_BASE_URL: "servicedesk-user-service-dev:8081"
     volumes:
       - ./backend:/app
       - ${HOME}/.m2:/root/.m2
