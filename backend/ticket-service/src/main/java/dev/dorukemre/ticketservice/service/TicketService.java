@@ -113,16 +113,18 @@ public class TicketService {
     switch (field) {
       case "status":
         if (request.getStatus() != null) {
+          String status = request.getStatus().toUpperCase();
+
           // Can't be IN_PROGRESS without an agent assigned
-          if (request.getStatus().equals("IN_PROGRESS") && ticket.getAgentId() == null)
+          if (status.equals("IN_PROGRESS") && ticket.getAgentId() == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Can't set status to IN_PROGRESS without assigning to agent");
 
           // Remove agent when setting to OPEN
-          if (request.getStatus().equals("OPEN"))
+          if (status.equals("OPEN"))
             ticket.setAgentId(null);
 
-          ticket.setStatus(request.getStatus());
+          ticket.setStatus(status);
         }
         break;
 
