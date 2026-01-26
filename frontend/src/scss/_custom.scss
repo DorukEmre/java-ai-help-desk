@@ -1,0 +1,81 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+// /* =========================
+//    Core brand colors
+//    ========================= */
+// $primary: #c44dd8;
+// $secondary: #3b82f6;
+// $success: #22c55e;
+// $info: #38bdf8;
+// $warning: #facc15;
+// $danger: #ef4444;
+
+// /* =========================
+//    Dark surfaces
+//    ========================= */
+// $body-bg: #030318;
+
+// $body-secondary-bg: tint-color($body-bg, 12%);
+// $body-tertiary-bg: tint-color($body-bg, 20%);
+
+// /* Cards, dropdowns, modals */
+// $card-bg: $body-secondary-bg;
+// $dropdown-bg: $body-secondary-bg;
+// $modal-content-bg: $body-secondary-bg;
+
+// /* =========================
+//    Text colors
+//    ========================= */
+// $body-color: rgba(#fff, 0.87);
+// $headings-color: #fff;
+// $muted: rgba(#fff, 0.6);
+
+// /* =========================
+//    Links
+//    ========================= */
+// $link-color: $primary;
+// $link-hover-color: tint-color($primary, 15%);
+
+// /* =========================
+//    Borders & dividers
+//    ========================= */
+// $border-color: rgba(#fff, 0.12);
+
+// /* =========================
+//    Forms
+//    ========================= */
+// $input-bg: $body-tertiary-bg;
+// $input-color: $body-color;
+// $input-border-color: $border-color;
+// $input-placeholder-color: rgba(#fff, 0.45);
+
+// $input-focus-border-color: $primary;
+// $input-focus-box-shadow: 0 0 0 .2rem rgba($primary, .25);
+
+// /* =========================
+//    Navbars
+//    ========================= */
+// $navbar-dark-bg: $body-tertiary-bg;
+// $navbar-dark-color: rgba(#fff, .8);
+// $navbar-dark-hover-color: #fff;
+// $navbar-dark-active-color: #fff;
+
+// /* =========================
+//    Bootstrap import
+//    ========================= */
+
+
+:root {
+  --bs-body-sunken-bg: color-mix(in srgb, black 20%, var(--bs-body-bg));
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-sunken-bg: color-mix(in srgb, black 20%, var(--bs-body-bg));
+}
+
+.bg-body-sunken {
+  background-color: var(--bs-body-sunken-bg) !important;
+}
+
+@import "bootstrap/scss/bootstrap";
