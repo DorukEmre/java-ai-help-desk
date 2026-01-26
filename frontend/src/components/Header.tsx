@@ -8,7 +8,7 @@ import { useAuth } from "@/auth/useAuth";
 const Header = () => {
   const navigate = useNavigate();
 
-  const { clearAuthSession, isUserLoggedIn } = useAuth();
+  const { clearAuthSession, isUserLoggedIn, user } = useAuth();
 
   const handleLogout = () => {
     clearAuthSession();
@@ -25,9 +25,11 @@ const Header = () => {
             <Nav className="me-auto">
               {isUserLoggedIn ? (
                 <>
-                  <Nav.Item>
-                    <Nav.Link as={Link} to="/tickets/create">Create Ticket</Nav.Link>
-                  </Nav.Item>
+                  {(user?.role == "STANDARD_USER") && (
+                    <Nav.Item>
+                      <Nav.Link as={Link} to="/tickets/create">Create Ticket</Nav.Link>
+                    </Nav.Item>
+                  )}
                   <Nav.Item>
                     <Nav.Link as={Link} to="/tickets/view">View Tickets</Nav.Link>
                   </Nav.Item>

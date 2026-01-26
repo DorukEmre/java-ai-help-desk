@@ -26,10 +26,14 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* Protected Routes */}
+
+          {/* STANDARD_USER Routes */}
+          <Route path="/tickets/create" element={<ProtectedRoute allowedRoles={["STANDARD_USER"]}><CreateTicket /></ProtectedRoute>} />
+
+          {/* Any Role Routes */}
           <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
 
             <Route path="/tickets/view" element={<ViewTickets />} />
-            <Route path="/tickets/create" element={<CreateTicket />} />
             <Route path="/tickets/:ticketId" element={<ViewTicketDetails />} />
 
           </Route>
