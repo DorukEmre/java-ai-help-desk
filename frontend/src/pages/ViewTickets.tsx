@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
-import { Badge, ListGroup } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { Ticket } from "@/types/ticket";
+import { TicketList } from "@/components/TicketList";
 
 
 const ViewTickets = () => {
@@ -66,32 +66,28 @@ const ViewTickets = () => {
 
       {error && <p className="text-danger">{error}</p>}
 
-      {tickets.length > 0 ? (
-        <ListGroup as="ul">
-
-          {tickets.map((ticket) => (
-            <ListGroup.Item as="li" key={ticket.id} className="d-flex justify-content-between align-items-start">
-
-              <div className="ms-2 me-auto">
-                <Link className="fw-bold text-body d-block" to={`/tickets/${ticket.id}`}>
-                  {ticket.description}
-                </Link>
-                {/* <small>User ID: {ticket.userId}</small> */}
-              </div>
-
-              <div className="text-end">
-                <Badge bg="secondary" className="mb-1">{ticket.status.toLocaleLowerCase()}</Badge>
-                <div>
-                  <small>{new Date(ticket.createdAt).toLocaleString()}</small>
-                </div>
-              </div>
-
-            </ListGroup.Item>
-          ))}
-
-        </ListGroup>
+      {(user?.role == "STANDARD_USER") ? (
+        <TicketList
+          tickets={tickets}
+        />
       ) : (
-        <p>No tickets found.</p>
+
+        <Tabs
+          defaultActiveKey="my"
+          id="uncontrolled-tab-example"
+          className="mb-3"
+        >
+          <Tab eventKey="my" title="My tickets">
+            <TicketList
+              tickets={tickets.filter(ticket => ticket.agentId == user?.id)}
+            />
+          </Tab>
+          <Tab eventKey="unassigned" title="Unassigned tickets">
+            <TicketList
+              tickets={tickets.filter(ticket => ticket.agentId == null || ticket.agentId === undefined)}
+            />
+          </Tab>
+        </Tabs>
       )}
 
     </>
