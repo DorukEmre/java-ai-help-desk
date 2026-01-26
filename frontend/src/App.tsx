@@ -18,7 +18,7 @@ function App() {
     <Container fluid className="d-flex flex-column min-vh-100 bg-back-300 text-neutral-300 p-0 position-relative">
       <Header />
 
-      <main className="flex-fill p-5">
+      <main className="flex-fill py-2 p-sm-5">
         <Routes>
 
           {/* Public Routes */}
