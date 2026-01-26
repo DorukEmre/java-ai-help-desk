@@ -1,21 +1,36 @@
-import type { User } from "@/types/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { InputGroup, Form, Button, ListGroup } from "react-bootstrap";
+
+import type { User } from "@/types/auth";
 
 
 interface Props {
-  agents: User[];
   currentStatus: string;
+  handleUpdateStatus: (newStatus: string) => void;
+  agents: User[];
   currentAgentId?: string;
-  onUpdate: (status: string, agentId?: string) => void;
+  handleUpdateAgentId: (newAgentId?: string) => void;
 }
 
-export const TicketAssignment = ({ agents, currentStatus, currentAgentId, onUpdate }: Props) => {
+export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, currentAgentId, handleUpdateAgentId }: Props) => {
   const [selectedStatus, setSelectedStatus] = useState(currentStatus);
   const [selectedAgent, setSelectedAgent] = useState(currentAgentId || "");
 
-  const handleUpdate = () => {
-    onUpdate(selectedStatus, selectedAgent || undefined);
+  useEffect(() => {
+    setSelectedStatus(currentStatus);
+  }, [currentStatus]);
+
+  useEffect(() => {
+    setSelectedAgent(currentAgentId || "");
+  }, [currentAgentId]);
+
+  const onUpdateStatus = () => {
+    handleUpdateStatus(selectedStatus);
+  };
+
+  const onUpdateAgentId = () => {
+    handleUpdateAgentId(selectedAgent || undefined);
   };
 
   return (
@@ -31,13 +46,11 @@ export const TicketAssignment = ({ agents, currentStatus, currentAgentId, onUpda
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
-            <option value="">Select status...</option>
-            <option value="open">Open</option>
-            <option value="in_progress">In Progress</option>
-            <option value="resolved">Resolved</option>
-            <option value="closed">Closed</option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="CLOSED">Closed</option>
           </Form.Select>
-          <Button variant="outline-secondary" onClick={handleUpdate}>
+          <Button variant="outline-secondary" onClick={onUpdateStatus}>
             Update Status
           </Button>
         </InputGroup>
@@ -60,7 +73,7 @@ export const TicketAssignment = ({ agents, currentStatus, currentAgentId, onUpda
               </option>
             ))}
           </Form.Select>
-          <Button variant="outline-secondary" onClick={handleUpdate}>
+          <Button variant="outline-secondary" onClick={onUpdateAgentId}>
             Assign Agent
           </Button>
         </InputGroup>

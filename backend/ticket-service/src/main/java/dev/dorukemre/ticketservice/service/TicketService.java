@@ -103,21 +103,57 @@ public class TicketService {
     return ticket;
   }
 
-  public Ticket updateTicket(String ticketId, UpdateTicketRequest request) {
-    log.info("Updating ticket with id: {}, {}", ticketId, request);
+  public Ticket updateTicket(
+      String ticketId, String field, UpdateTicketRequest request) {
+    log.info("Updating ticket with id: {}, {}, {}", ticketId, field, request);
 
     Ticket ticket = ticketRepository.findById(ticketId)
-        .orElseThrow(() -> new RuntimeException("Ticket not found"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-    if (request.getStatus() != null) {
-      ticket.setStatus(request.getStatus());
-    }
+    switch (field) {
+      case "status":
+        if (request.getStatus() != null) {
+          // Can't be IN_PROGRESS without an agent assigned
+          if (request.getStatus().equals("IN_PROGRESS") && ticket.getAgentId() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Can't set status to IN_PROGRESS without assigning to agent");
 
-    if (request.getAgentId() != null) {
-      // check with user-service that assigned agent exists and has correct role
-      userServiceClient.checkAgent(request.getAgentId());
+          // Remove agent when setting to OPEN
+          if (request.getStatus().equals("OPEN"))
+            ticket.setAgentId(null);
 
-      ticket.setAgentId(request.getAgentId());
+          ticket.setStatus(request.getStatus());
+        }
+        break;
+
+      case "agentId":
+        if (request.getAgentId() != null) {
+          // Check that assigned agent exists and has correct role
+          userServiceClient.checkAgent(request.getAgentId());
+          // Set status to IN_PROGRESS when agent assigned
+          if (ticket.getStatus().equals("OPEN")) {
+            ticket.setStatus("IN_PROGRESS");
+          }
+        } else {
+          ticket.setStatus("OPEN");
+        }
+        ticket.setAgentId(request.getAgentId());
+        break;
+
+      case "actions":
+        if (request.getActions() != null) {
+          ticket.setActions(request.getActions());
+        }
+        break;
+
+      case "tags":
+        if (request.getTags() != null) {
+          ticket.setTags(request.getTags());
+        }
+        break;
+
+      default:
+        throw new IllegalArgumentException("Invalid field: " + field);
     }
 
     return ticketRepository.save(ticket);

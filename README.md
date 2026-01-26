@@ -40,7 +40,10 @@ backend/
 
 - Active:
     - Open: Newly created tickets that haven't been assigned.
-    - Assigned: Tickets that are assigned to a user but not yet in progress.
     - In-progress: Tickets that are currently being worked on.
 - Completed:
     - Closed: Tickets that have been completed and marked as such.
+
+## JWT
+  - Created by user-service on login and registration
+  - Validated by api-gateway and user roles extracted for routing permission

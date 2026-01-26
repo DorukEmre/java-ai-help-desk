@@ -22,6 +22,13 @@ export interface TicketCreationResponse {
   createdAt: string;
 }
 
+export interface UpdateTicketRequest {
+  status?: string;
+  agentId?: string | null;
+  actions?: TicketAction[];
+  tags?: string[];
+}
+
 export interface Ticket {
   id: string;
   userId: string;

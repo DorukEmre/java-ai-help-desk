@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.dorukemre.ticketservice.entity.Ticket;
@@ -87,10 +88,11 @@ public class TicketController {
   @PatchMapping("/tickets/{ticketId}")
   public Ticket updateTicket(
       @PathVariable("ticketId") String ticketId,
+      @RequestParam("update") String field,
       @RequestBody UpdateTicketRequest request) {
     System.out.println("PATCH /api/v1/ticket/tickets/{ticketId} called");
 
-    return ticketService.updateTicket(ticketId, request);
+    return ticketService.updateTicket(ticketId, field, request);
   }
 
 }

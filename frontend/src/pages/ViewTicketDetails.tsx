@@ -2,7 +2,7 @@ import { useAuth } from "@/auth/useAuth";
 import { TicketAssignment } from "@/components/TicketAssignment";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { User } from "@/types/auth";
-import type { Ticket } from "@/types/ticket";
+import type { Ticket, UpdateTicketRequest } from "@/types/ticket";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ListGroup } from "react-bootstrap";
@@ -87,15 +87,15 @@ const ViewTicketDetails = () => {
 
   }, [authApi, ticketId]);
 
-  const handleUpdate = async (status: string, agentId?: string) => {
-    console.log("Updating ticket:", { status, agentId });
+  const updateTicket = async (field: string, body: UpdateTicketRequest) => {
+    console.log("Updating ticket:", { field, body });
 
 
     try {
 
-      const url = `/tickets/${ticketId}`;
+      const url = `/tickets/${ticketId}?update=${field}`;
 
-      const response = await authApi.patch(url, { status, agentId });
+      const response = await authApi.patch(url, body);
       console.log("Updated ticket:", response.data);
 
       setTicket(response.data);
@@ -106,7 +106,7 @@ const ViewTicketDetails = () => {
         if (error.response.data.message)
           setError(error.response.data.message);
         else if (error.response.status)
-          setError("Unexpected error: " + error.response.status.toString());
+          setError("Unexpected error: " + error.response.status.toString() + " " + error.code || "");
         else
           setError('An unexpected error occurred.');
 
@@ -116,6 +116,14 @@ const ViewTicketDetails = () => {
       }
     }
   }
+
+  const handleUpdateStatus = async (newStatus: string) => {
+    await updateTicket("status", { status: newStatus });
+  };
+  const handleUpdateAgentId = async (newAgentId: string | undefined) => {
+    await updateTicket("agentId", { agentId: newAgentId });
+  };
+
 
   return (
     <>
@@ -138,10 +146,11 @@ const ViewTicketDetails = () => {
 
           {(user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN") ? (
             <TicketAssignment
-              agents={agents}
               currentStatus={ticket.status}
+              handleUpdateStatus={handleUpdateStatus}
+              agents={agents}
               currentAgentId={ticket.agentId || ""}
-              onUpdate={handleUpdate}
+              handleUpdateAgentId={handleUpdateAgentId}
             />
           ) : (
             <>
