@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import { Badge, Button, Form } from "react-bootstrap";
+import { Badge, Button, Form, Spinner } from "react-bootstrap";
 
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
@@ -15,10 +15,12 @@ const CreateTicket = () => {
   const [description, setDescription] = useState<string>('');
   const [ticket, setTicket] = useState<TicketCreationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     try {
 
@@ -38,6 +40,9 @@ const CreateTicket = () => {
         setError('An unexpected error occurred.');
         console.error("Unexpected error:", error);
       }
+
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -90,8 +95,16 @@ const CreateTicket = () => {
               required />
           </Form.Group>
 
-          <Button variant="primary" type="submit">
-            Create Ticket
+          <Button variant="primary" type="submit" disabled={isLoading}>
+            Create Ticket{' '}
+            {isLoading && (
+              <>
+                <Spinner as="span"
+                  animation="border" size="sm" role="status" aria-hidden="true"
+                />
+                <span className="visually-hidden">Loading...</span>
+              </>
+            )}
           </Button>
         </Form>
 

@@ -11,8 +11,9 @@ import { TicketList } from "@/components/TicketList";
 
 const ViewTickets = () => {
 
-  const [error, setError] = useState<string | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { user } = useAuth();
   const authApi = useAuthApi();
@@ -21,6 +22,7 @@ const ViewTickets = () => {
   useEffect(() => {
 
     const getTickets = async (url: string) => {
+      setIsLoading(true);
 
       try {
 
@@ -47,6 +49,9 @@ const ViewTickets = () => {
           setError('An unexpected error occurred.');
           console.error("Unexpected error:", error);
         }
+
+      } finally {
+        setIsLoading(false);
       }
     }
     let url: string;
@@ -69,6 +74,7 @@ const ViewTickets = () => {
       {(user?.role == "STANDARD_USER") ? (
         <TicketList
           tickets={tickets}
+          isLoading={isLoading}
         />
       ) : (
 
@@ -80,11 +86,13 @@ const ViewTickets = () => {
           <Tab eventKey="my" title="My tickets">
             <TicketList
               tickets={tickets.filter(ticket => ticket.agentId == user?.id)}
+              isLoading={isLoading}
             />
           </Tab>
           <Tab eventKey="unassigned" title="Unassigned tickets">
             <TicketList
               tickets={tickets.filter(ticket => ticket.agentId == null || ticket.agentId === undefined)}
+              isLoading={isLoading}
             />
           </Tab>
         </Tabs>

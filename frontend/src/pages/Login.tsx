@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, Spinner } from 'react-bootstrap';
 
 import { addBaseUrl } from '@/utils/globals';
 import { useAuth } from '@/auth/useAuth';
@@ -17,6 +17,7 @@ const Login = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { setAuthSession, isUserLoggedIn } = useAuth();
 
@@ -34,6 +35,7 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     if (!isValidCredentials(username, password)) {
       setError("Username or password not valid");
@@ -62,6 +64,9 @@ const Login = () => {
         setError('An unexpected error occurred.');
         console.error("Unexpected error:", error);
       }
+
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -108,8 +113,17 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required />
         </Form.Group>
-        <Button variant="primary" type="submit">
-          Log in
+
+        <Button variant="primary" type="submit" disabled={isLoading}>
+          Log in{' '}
+          {isLoading && (
+            <>
+              <Spinner as="span"
+                animation="border" size="sm" role="status" aria-hidden="true"
+              />
+              <span className="visually-hidden">Loading...</span>
+            </>
+          )}
         </Button>
       </Form>
 

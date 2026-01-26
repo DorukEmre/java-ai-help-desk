@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { InputGroup, Form, Button, ListGroup } from "react-bootstrap";
+import { InputGroup, Form, Button, ListGroup, Spinner } from "react-bootstrap";
 
 import type { User } from "@/types/auth";
+import type { TicketLoadingState } from "@/types/ticket";
 
 
 interface Props {
@@ -11,11 +12,14 @@ interface Props {
   agents: User[];
   currentAgentId?: string;
   handleUpdateAgentId: (newAgentId?: string) => void;
+  isLoading: TicketLoadingState;
 }
 
-export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, currentAgentId, handleUpdateAgentId }: Props) => {
+export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, currentAgentId, handleUpdateAgentId, isLoading }: Props) => {
   const [selectedStatus, setSelectedStatus] = useState(currentStatus);
   const [selectedAgent, setSelectedAgent] = useState(currentAgentId || "");
+
+  const anyLoading = Object.values(isLoading).some(loading => loading);
 
   useEffect(() => {
     setSelectedStatus(currentStatus);
@@ -50,8 +54,16 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
             <option value="IN_PROGRESS">In Progress</option>
             <option value="CLOSED">Closed</option>
           </Form.Select>
-          <Button variant="outline-secondary" onClick={onUpdateStatus}>
-            Update Status
+          <Button variant="outline-secondary" onClick={onUpdateStatus} disabled={anyLoading}>
+            Update Status{' '}
+            {isLoading.isUpdatingStatus && (
+              <>
+                <Spinner as="span"
+                  animation="border" size="sm" role="status" aria-hidden="true"
+                />
+                <span className="visually-hidden">Loading...</span>
+              </>
+            )}
           </Button>
         </InputGroup>
       </ListGroup.Item>
@@ -73,8 +85,16 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
               </option>
             ))}
           </Form.Select>
-          <Button variant="outline-secondary" onClick={onUpdateAgentId}>
-            Assign Agent
+          <Button variant="outline-secondary" onClick={onUpdateAgentId} disabled={anyLoading}>
+            Assign Agent{' '}
+            {isLoading.isUpdatingAgent && (
+              <>
+                <Spinner as="span"
+                  animation="border" size="sm" role="status" aria-hidden="true"
+                />
+                <span className="visually-hidden">Loading...</span>
+              </>
+            )}
           </Button>
         </InputGroup>
       </ListGroup.Item>

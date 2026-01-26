@@ -1,12 +1,15 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import { ListGroup, Spinner } from "react-bootstrap";
+
 import { useAuth } from "@/auth/useAuth";
 import { TicketAssignment } from "@/components/TicketAssignment";
 import { useAuthApi } from "@/hooks/useAuthApi";
+
 import type { User } from "@/types/auth";
-import type { Ticket, UpdateTicketRequest } from "@/types/ticket";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { ListGroup } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } from "@/types/ticket";
 
 const ViewTicketDetails = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
@@ -14,6 +17,14 @@ const ViewTicketDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [agents, setAgents] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState<TicketLoadingState>({
+    isLoadingAgentsList: false,
+    isLoadingTicket: false,
+    isUpdatingStatus: false,
+    isUpdatingAgent: false,
+    isUpdatingTags: false,
+    isUpdatingActions: false
+  });
 
   const { user } = useAuth();
   const authApi = useAuthApi();
@@ -22,6 +33,7 @@ const ViewTicketDetails = () => {
   useEffect(() => {
 
     const getAgentsList = async () => {
+      setIsLoading(prevState => ({ ...prevState, isLoadingAgentsList: true, }));
 
       try {
 
@@ -46,6 +58,8 @@ const ViewTicketDetails = () => {
           setError('An unexpected error occurred.');
           console.error("Unexpected error:", error);
         }
+      } finally {
+        setIsLoading(prevState => ({ ...prevState, isLoadingAgentsList: false, }));
       }
     }
 
@@ -57,6 +71,7 @@ const ViewTicketDetails = () => {
   useEffect(() => {
 
     const getTicket = async () => {
+      setIsLoading(prevState => ({ ...prevState, isLoadingTicket: true, }));
 
       try {
 
@@ -81,16 +96,33 @@ const ViewTicketDetails = () => {
           setError('An unexpected error occurred.');
           console.error("Unexpected error:", error);
         }
+      } finally {
+        setIsLoading(prevState => ({ ...prevState, isLoadingTicket: false, }));
       }
     }
     getTicket();
 
   }, [authApi, ticketId]);
 
-  const updateTicket = async (field: string, body: UpdateTicketRequest) => {
+  const loadingFieldMap: Record<TicketField, string> = {
+    status: 'isUpdatingStatus',
+    agentId: 'isUpdatingAgent',
+    tags: 'isUpdatingTags',
+    actions: 'isUpdatingActions',
+  };
+
+  const updateTicket = async (field: TicketField, body: UpdateTicketRequest) => {
     console.log("Updating ticket:", { field, body });
 
     setError(null);
+
+    const loadingKey = loadingFieldMap[field];
+    if (loadingKey) {
+      setIsLoading(prevState => ({
+        ...prevState,
+        [loadingKey]: true,
+      }));
+    }
 
     try {
 
@@ -115,6 +147,14 @@ const ViewTicketDetails = () => {
         setError('An unexpected error occurred.');
         console.error("Unexpected error:", error);
       }
+
+    } finally {
+      if (loadingKey) {
+        setIsLoading(prevState => ({
+          ...prevState,
+          [loadingKey]: false,
+        }));
+      }
     }
   }
 
@@ -136,87 +176,94 @@ const ViewTicketDetails = () => {
 
       {error && <p className="text-danger">{error}</p>}
 
-      {ticket && (
-        <ListGroup as="ul">
+      {ticket
+        && !(isLoading.isLoadingTicket || isLoading.isLoadingAgentsList)
+        ? (
+          <ListGroup as="ul">
 
-          <ListGroup.Item as="li">
-            <strong>Description:</strong>
-            <div>{ticket.description}</div>
-          </ListGroup.Item>
+            <ListGroup.Item as="li">
+              <strong>Description:</strong>
+              <div>{ticket.description}</div>
+            </ListGroup.Item>
 
-
-          {(user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN") ? (
-            <TicketAssignment
-              currentStatus={ticket.status}
-              handleUpdateStatus={handleUpdateStatus}
-              agents={agents}
-              currentAgentId={ticket.agentId || ""}
-              handleUpdateAgentId={handleUpdateAgentId}
-            />
-          ) : (
-            <>
-              <ListGroup.Item as="li">
-                <strong>Status:</strong> {ticket.status.toLocaleLowerCase()}
-              </ListGroup.Item>
-              <ListGroup.Item as="li">
-                <strong>Assigned Agent:</strong>{" "}
-                {ticket.agentId ?? "Unassigned"}
-              </ListGroup.Item>
-            </>
-          )}
-
-          <ListGroup.Item as="li">
-            <strong>Created At:</strong>{" "}
-            {new Date(ticket.createdAt).toLocaleString()}
-          </ListGroup.Item>
-
-          <ListGroup.Item as="li">
-            <strong>Last Updated:</strong>{" "}
-            {new Date(ticket.updatedAt).toLocaleString()}
-          </ListGroup.Item>
-
-          <ListGroup.Item as="li">
-            <strong>Created By (User ID):</strong> {ticket.userId}
-          </ListGroup.Item>
-
-
-          <ListGroup.Item as="li">
-            <strong>Tags:</strong>{" "}
-            {ticket.tags && ticket.tags.length > 0
-              ? ticket.tags.join(", ")
-              : "None"}
-          </ListGroup.Item>
-
-          <ListGroup.Item as="li">
-            <strong>Actions:</strong>
-
-            {ticket.actions && ticket.actions.length > 0 ? (
-              <ListGroup as="ul" className="mt-2">
-                {ticket.actions.map((action, index) => (
-                  <ListGroup.Item as="li" key={index}>
-                    <div>
-                      <strong>Type:</strong> {action.type}
-                    </div>
-                    <div>
-                      <strong>Performed By:</strong> {action.performedBy}
-                    </div>
-                    <div>
-                      <strong>At:</strong>{" "}
-                      {new Date(action.timestamp).toLocaleString()}
-                    </div>
-                    <div>
-                      <strong>Details:</strong> {action.details}
-                    </div>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+            {(user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN") ? (
+              <TicketAssignment
+                currentStatus={ticket.status}
+                handleUpdateStatus={handleUpdateStatus}
+                agents={agents}
+                currentAgentId={ticket.agentId || ""}
+                handleUpdateAgentId={handleUpdateAgentId}
+                isLoading={isLoading}
+              />
             ) : (
-              <div className="mt-1">No actions recorded</div>
+              <>
+                <ListGroup.Item as="li">
+                  <strong>Status:</strong> {ticket.status.toLocaleLowerCase()}
+                </ListGroup.Item>
+                <ListGroup.Item as="li">
+                  <strong>Assigned Agent:</strong>{" "}
+                  {ticket.agentId ?? "Unassigned"}
+                </ListGroup.Item>
+              </>
             )}
-          </ListGroup.Item>
 
-        </ListGroup>
-      )}
+            <ListGroup.Item as="li">
+              <strong>Created At:</strong>{" "}
+              {new Date(ticket.createdAt).toLocaleString()}
+            </ListGroup.Item>
+
+            <ListGroup.Item as="li">
+              <strong>Last Updated:</strong>{" "}
+              {new Date(ticket.updatedAt).toLocaleString()}
+            </ListGroup.Item>
+
+            <ListGroup.Item as="li">
+              <strong>Created By (User ID):</strong> {ticket.userId}
+            </ListGroup.Item>
+
+
+            <ListGroup.Item as="li">
+              <strong>Tags:</strong>{" "}
+              {ticket.tags && ticket.tags.length > 0
+                ? ticket.tags.join(", ")
+                : "None"}
+            </ListGroup.Item>
+
+            <ListGroup.Item as="li">
+              <strong>Actions:</strong>
+
+              {ticket.actions && ticket.actions.length > 0 ? (
+                <ListGroup as="ul" className="mt-2">
+                  {ticket.actions.map((action, index) => (
+                    <ListGroup.Item as="li" key={index}>
+                      <div>
+                        <strong>Type:</strong> {action.type}
+                      </div>
+                      <div>
+                        <strong>Performed By:</strong> {action.performedBy}
+                      </div>
+                      <div>
+                        <strong>At:</strong>{" "}
+                        {new Date(action.timestamp).toLocaleString()}
+                      </div>
+                      <div>
+                        <strong>Details:</strong> {action.details}
+                      </div>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              ) : (
+                <div className="mt-1">No actions recorded</div>
+              )}
+            </ListGroup.Item>
+
+          </ListGroup>
+        ) : (
+          <>
+            <span >Loading... </span>
+            <Spinner animation="border" size="sm" role="status" />
+          </>
+        )}
     </>
   );
 

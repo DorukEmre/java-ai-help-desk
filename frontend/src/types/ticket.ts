@@ -14,6 +14,17 @@ export interface TicketAction {
   timestamp: string;
 }
 
+export interface Ticket {
+  id: string;
+  userId: string;
+  description: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  agentId?: string | null;
+  actions?: TicketAction[];
+  tags?: string[];
+}
 
 export interface TicketCreationResponse {
   id: string;
@@ -29,14 +40,13 @@ export interface UpdateTicketRequest {
   tags?: string[];
 }
 
-export interface Ticket {
-  id: string;
-  userId: string;
-  description: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  agentId?: string | null;
-  actions?: TicketAction[];
-  tags?: string[];
-}
+export type TicketLoadingState = {
+  isLoadingAgentsList: boolean;
+  isLoadingTicket: boolean;
+  isUpdatingStatus: boolean;
+  isUpdatingAgent: boolean;
+  isUpdatingTags: boolean;
+  isUpdatingActions: boolean;
+};
+
+export type TicketField = 'status' | 'agentId' | 'tags' | 'actions';
