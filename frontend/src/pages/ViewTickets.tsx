@@ -7,6 +7,7 @@ import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { Ticket } from "@/types/ticket";
 import { TicketList } from "@/components/TicketList";
+import { Error } from "@/components/Error";
 
 
 const ViewTickets = () => {
@@ -69,7 +70,7 @@ const ViewTickets = () => {
     <>
       <h1 className="visually-hidden">View Tickets</h1>
 
-      {error && <p className="text-danger">{error}</p>}
+      <Error error={error} />
 
       {(user?.role == "STANDARD_USER") ? (
         <TicketList
@@ -81,7 +82,7 @@ const ViewTickets = () => {
         <Tabs
           defaultActiveKey="my"
           id="uncontrolled-tab-example"
-          className="mb-3"
+          className="mb-3 mx-auto" style={{ maxWidth: "800px" }}
         >
           <Tab eventKey="my" title="My tickets">
             <TicketList

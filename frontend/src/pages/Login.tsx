@@ -6,6 +6,7 @@ import { Container, Form, Button, Spinner } from 'react-bootstrap';
 
 import { addBaseUrl } from '@/utils/globals';
 import { useAuth } from '@/auth/useAuth';
+import { Error } from '@/components/Error';
 
 
 const Login = () => {
@@ -91,7 +92,7 @@ const Login = () => {
         </p>
       </div>
 
-      {error && <p className="text-danger">{error}</p>}
+      <Error error={error} />
 
       <Form onSubmit={handleSubmit} className="w-100" style={{ maxWidth: '366px' }}>
         <Form.Group className="mb-3" controlId="formUsername">
