@@ -90,6 +90,7 @@ const ViewTicketDetails = () => {
   const updateTicket = async (field: string, body: UpdateTicketRequest) => {
     console.log("Updating ticket:", { field, body });
 
+    setError(null);
 
     try {
 
@@ -155,7 +156,7 @@ const ViewTicketDetails = () => {
           ) : (
             <>
               <ListGroup.Item as="li">
-                <strong>Status:</strong> {ticket.status}
+                <strong>Status:</strong> {ticket.status.toLocaleLowerCase()}
               </ListGroup.Item>
               <ListGroup.Item as="li">
                 <strong>Assigned Agent:</strong>{" "}

@@ -70,7 +70,7 @@ const CreateTicket = () => {
             </div>
 
             <div className="text-end">
-              <Badge bg="secondary" className="mb-1">{ticket.status}</Badge>
+              <Badge bg="secondary" className="mb-1">{ticket.status.toLocaleLowerCase()}</Badge>
               <div>
                 <small>{new Date(ticket.createdAt).toLocaleString()}</small>
               </div>
