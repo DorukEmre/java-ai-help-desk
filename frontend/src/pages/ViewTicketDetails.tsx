@@ -10,6 +10,7 @@ import { useAuthApi } from "@/hooks/useAuthApi";
 
 import type { User } from "@/types/auth";
 import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } from "@/types/ticket";
+import { Error } from "@/components/Error";
 
 const ViewTicketDetails = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
@@ -170,19 +171,15 @@ const ViewTicketDetails = () => {
     <>
       <h1 className="visually-hidden">Ticket Detail</h1>
 
-      <div className="mb-3">
-        <strong>Ticket ID:</strong> {ticketId}
-      </div>
-
-      {error && <p className="text-danger">{error}</p>}
+      <Error error={error} />
 
       {ticket
         && !(isLoading.isLoadingTicket || isLoading.isLoadingAgentsList)
         ? (
-          <ListGroup as="ul">
+          <ListGroup as="ul" className="mx-auto" style={{ maxWidth: "800px" }}>
 
-            <ListGroup.Item as="li">
-              <strong>Description:</strong>
+            <ListGroup.Item as="li" className="">
+              <p className="fw-bold">Description:</p>
               <div>{ticket.description}</div>
             </ListGroup.Item>
 
@@ -197,57 +194,57 @@ const ViewTicketDetails = () => {
               />
             ) : (
               <>
-                <ListGroup.Item as="li">
-                  <strong>Status:</strong> {ticket.status.toLocaleLowerCase()}
+                <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
+                  <p className="fw-bold">Status:</p> {ticket.status.toLocaleLowerCase()}
                 </ListGroup.Item>
-                <ListGroup.Item as="li">
-                  <strong>Assigned Agent:</strong>{" "}
+                <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
+                  <p className="fw-bold">Assigned Agent:</p>{" "}
                   {ticket.agentId ?? "Unassigned"}
                 </ListGroup.Item>
               </>
             )}
 
-            <ListGroup.Item as="li">
-              <strong>Created At:</strong>{" "}
+            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
+              <p className="fw-bold">Created At:</p>{" "}
               {new Date(ticket.createdAt).toLocaleString()}
             </ListGroup.Item>
 
-            <ListGroup.Item as="li">
-              <strong>Last Updated:</strong>{" "}
+            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
+              <p className="fw-bold">Last Updated:</p>{" "}
               {new Date(ticket.updatedAt).toLocaleString()}
             </ListGroup.Item>
 
-            <ListGroup.Item as="li">
-              <strong>Created By (User ID):</strong> {ticket.userId}
+            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
+              <p className="fw-bold">Created By (User ID):</p> {ticket.userId}
             </ListGroup.Item>
 
 
-            <ListGroup.Item as="li">
-              <strong>Tags:</strong>{" "}
+            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
+              <p className="fw-bold">Tags:</p>{" "}
               {ticket.tags && ticket.tags.length > 0
                 ? ticket.tags.join(", ")
                 : "None"}
             </ListGroup.Item>
 
             <ListGroup.Item as="li">
-              <strong>Actions:</strong>
+              <p className="fw-bold">Actions:</p>
 
               {ticket.actions && ticket.actions.length > 0 ? (
                 <ListGroup as="ul" className="mt-2">
                   {ticket.actions.map((action, index) => (
                     <ListGroup.Item as="li" key={index}>
                       <div>
-                        <strong>Type:</strong> {action.type}
+                        <p className="fw-bold">Type:</p> {action.type}
                       </div>
                       <div>
-                        <strong>Performed By:</strong> {action.performedBy}
+                        <p className="fw-bold">Performed By:</p> {action.performedBy}
                       </div>
                       <div>
-                        <strong>At:</strong>{" "}
+                        <p className="fw-bold">At:</p>{" "}
                         {new Date(action.timestamp).toLocaleString()}
                       </div>
                       <div>
-                        <strong>Details:</strong> {action.details}
+                        <p className="fw-bold">Details:</p> {action.details}
                       </div>
                     </ListGroup.Item>
                   ))}

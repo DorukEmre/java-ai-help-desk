@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { Accordion, Badge, ListGroup, Spinner } from "react-bootstrap"
+import { Accordion, Badge, Col, ListGroup, Spinner } from "react-bootstrap"
 
 import type { Ticket } from "@/types/ticket"
 
@@ -28,7 +28,7 @@ export const TicketList = ({ tickets, isLoading }: Props) => {
       )}
 
       {!isLoading && tickets.length > 0 && (
-        <Accordion defaultActiveKey={['0']} alwaysOpen>
+        <Accordion as={Col} defaultActiveKey={['0']} alwaysOpen className="mx-auto" style={{ maxWidth: "800px" }}>
 
           <Accordion.Item eventKey="0">
 
@@ -36,7 +36,7 @@ export const TicketList = ({ tickets, isLoading }: Props) => {
               Active Tickets ({activeTickets.length})
             </Accordion.Header>
 
-            <Accordion.Body style={{ maxHeight: '500px', overflowY: 'scroll' }}>
+            <Accordion.Body style={{ maxHeight: '300px', overflowY: 'scroll' }}>
               {activeTickets.length > 0 ? (
                 <ListGroup as="ul">
                   {activeTickets.map((ticket) => (
@@ -68,7 +68,7 @@ export const TicketList = ({ tickets, isLoading }: Props) => {
               Closed Tickets ({closedTickets.length})
             </Accordion.Header>
 
-            <Accordion.Body style={{ maxHeight: '500px%', overflowY: 'scroll' }}>
+            <Accordion.Body style={{ maxHeight: '300px%', overflowY: 'scroll' }}>
               {closedTickets.length > 0 ? (
                 <ListGroup as="ul">
                   {closedTickets.map((ticket) => (

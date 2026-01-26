@@ -2,11 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import { Badge, Button, Form, Spinner } from "react-bootstrap";
+import { Badge, Button, Container, Form, Spinner } from "react-bootstrap";
 
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { TicketCreationResponse } from "@/types/ticket";
+import { Error } from "@/components/Error";
 
 const CreateTicket = () => {
   const authApi = useAuthApi();
@@ -56,17 +57,17 @@ const CreateTicket = () => {
     <>
       <h1 className="visually-hidden">Create Ticket</h1>
 
-      {error && <p className="text-danger">{error}</p>}
+      <Error error={error} />
 
       {ticket ? (
-        <>
-          <div className="d-flex justify-content-between align-items-center">
-            <p className="my-4">Ticket successfully created</p>
+        <Container style={{ maxWidth: "800px" }}>
+          <div className="d-flex justify-content-between align-items-center mx-auto mb-3" style={{ maxWidth: '366px' }}>
+            <p>Ticket successfully created</p>
             <Button variant="primary" type="button" onClick={resetTicket}>
               New Ticket
             </Button>
           </div>
-          <div className="d-flex justify-content-between align-items-start">
+          <div className="border border-secondary p-2 rounded d-flex justify-content-between align-items-start">
 
             <div className="ms-2 me-auto">
               <Link className="fw-bold text-body d-block" to={`/tickets/${ticket.id}`}>
@@ -82,9 +83,9 @@ const CreateTicket = () => {
             </div>
 
           </div>
-        </>
+        </Container >
       ) : (
-        <Form onSubmit={handleSubmit} className="w-100" style={{ maxWidth: '366px' }}>
+        <Form onSubmit={handleSubmit} className="w-100 mx-auto" style={{ maxWidth: '366px' }}>
           <Form.Group className="mb-3" controlId="formDescription">
             <Form.Label>Description</Form.Label>
             <Form.Control

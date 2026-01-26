@@ -41,12 +41,13 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
     <>
       {/* Status selector */}
 
-      <ListGroup.Item as="li">
-        <InputGroup className="d-flex align-items-center">
-          <strong>Status:</strong>{" "}
+      <ListGroup.Item as="li" className="d-flex justify-content-between align-items-center flex-wrap">
+        <p className="fw-bold">Status:</p>{" "}
+
+        <InputGroup className="d-flex align-items-center w-auto">
           <Form.Select
             className="ms-auto"
-            style={{ maxWidth: "250px" }}
+            style={{ minWidth: "175px", maxWidth: "250px" }}
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -54,8 +55,9 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
             <option value="IN_PROGRESS">In Progress</option>
             <option value="CLOSED">Closed</option>
           </Form.Select>
-          <Button variant="outline-secondary" onClick={onUpdateStatus} disabled={anyLoading}>
-            Update Status{' '}
+          <Button variant="outline-secondary" onClick={onUpdateStatus} disabled={anyLoading} style={{ width: "75px" }}
+          >
+            Update{' '}
             {isLoading.isUpdatingStatus && (
               <>
                 <Spinner as="span"
@@ -69,12 +71,13 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
       </ListGroup.Item>
 
       {/* Agent selector */}
-      <ListGroup.Item as="li">
-        <InputGroup className="d-flex align-items-center">
-          <strong>Assigned Agent:</strong>{" "}
+      <ListGroup.Item as="li" className="d-flex justify-content-between align-items-center flex-wrap">
+        <p className="fw-bold">Assigned Agent:</p>{" "}
+
+        <InputGroup className="d-flex align-items-center w-auto">
           <Form.Select
             className="ms-auto"
-            style={{ maxWidth: "250px" }}
+            style={{ minWidth: "175px", maxWidth: "250px" }}
             value={selectedAgent}
             onChange={(e) => setSelectedAgent(e.target.value)}
           >
@@ -85,8 +88,9 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
               </option>
             ))}
           </Form.Select>
-          <Button variant="outline-secondary" onClick={onUpdateAgentId} disabled={anyLoading}>
-            Assign Agent{' '}
+          <Button variant="outline-secondary" onClick={onUpdateAgentId} disabled={anyLoading} style={{ width: "75px" }}
+          >
+            Assign{' '}
             {isLoading.isUpdatingAgent && (
               <>
                 <Spinner as="span"

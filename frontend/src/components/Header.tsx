@@ -17,12 +17,12 @@ const Header = () => {
 
   return (
     <header className="border-bottom position-sticky top-0 start-0 z-3">
-      <Navbar expand="lg" className="bg-body-secondary">
+      <Navbar expand="lg" className="bg-body-sunken p-3">
         <Container>
           <Navbar.Brand as={Link} to="/">Service Desk</Navbar.Brand>
           <Navbar.Toggle aria-controls="header-navbar-nav" />
           <Navbar.Collapse id="header-navbar-nav">
-            <Nav className="me-auto">
+            <Nav className="ms-auto">
               {isUserLoggedIn ? (
                 <>
                   {(user?.role == "STANDARD_USER") && (
