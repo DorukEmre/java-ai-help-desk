@@ -15,4 +15,6 @@ public class TicketCreationRequest {
   @NotBlank(message = "Description is required")
   private String description;
 
+  private String cloudinaryIdPublicId;
+
 }
