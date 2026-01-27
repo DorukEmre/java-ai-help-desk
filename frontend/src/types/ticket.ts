@@ -26,6 +26,11 @@ export interface Ticket {
   tags?: string[];
 }
 
+export interface TicketCreationRequest {
+  description: string;
+  cloudinaryIdPublicId: string;
+}
+
 export interface TicketCreationResponse {
   id: string;
   description: string;
