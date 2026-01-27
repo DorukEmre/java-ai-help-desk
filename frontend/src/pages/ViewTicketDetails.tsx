@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 
 import { ListGroup, Spinner } from "react-bootstrap";
 
+import { AdvancedImage, placeholder, responsive } from "@cloudinary/react";
+import { cld } from "@/config/cloudinaryConfig";
+
 import { useAuth } from "@/auth/useAuth";
 import { TicketAssignment } from "@/components/TicketAssignment";
 import { useAuthApi } from "@/hooks/useAuthApi";
@@ -11,6 +14,7 @@ import { useAuthApi } from "@/hooks/useAuthApi";
 import type { User } from "@/types/auth";
 import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } from "@/types/ticket";
 import { Error } from "@/components/Error";
+
 
 const ViewTicketDetails = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
@@ -218,6 +222,19 @@ const ViewTicketDetails = () => {
               <p className="fw-bold">Created By (User ID):</p> {ticket.userId}
             </ListGroup.Item>
 
+
+            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap"
+              style={ticket.cloudinaryIdPublicId ? { height: "200px" } : {}}             >
+              <p className="fw-bold">Image:</p>{" "}
+              {ticket.cloudinaryIdPublicId && (
+                <AdvancedImage
+                  className="rounded h-100"
+                  style={{ maxHeight: '100%' }}
+                  cldImg={cld.image(ticket.cloudinaryIdPublicId)}
+                  plugins={[responsive(), placeholder()]}
+                />
+              )}
+            </ListGroup.Item>
 
             <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
               <p className="fw-bold">Tags:</p>{" "}
