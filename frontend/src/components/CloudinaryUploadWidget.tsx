@@ -8,7 +8,7 @@ import { Button } from 'react-bootstrap';
 // https://stackblitz.com/edit/cloudinary-upload-widget-react
 
 type Props = {
-  setPublicId: React.Dispatch<React.SetStateAction<string>>
+  setPublicId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const CloudinaryUploadWidget = ({ setPublicId }: Props) => {

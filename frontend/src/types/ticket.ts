@@ -24,11 +24,12 @@ export interface Ticket {
   agentId?: string | null;
   actions?: TicketAction[];
   tags?: string[];
+  cloudinaryIdPublicId?: string | null;
 }
 
 export interface TicketCreationRequest {
   description: string;
-  cloudinaryIdPublicId: string;
+  cloudinaryIdPublicId?: string | null;
 }
 
 export interface TicketCreationResponse {

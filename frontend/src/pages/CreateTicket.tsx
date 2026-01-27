@@ -19,7 +19,7 @@ const CreateTicket = () => {
 
   const [description, setDescription] = useState<string>('');
   const [ticket, setTicket] = useState<TicketCreationResponse | null>(null);
-  const [cloudinaryIdPublicId, setCloudinaryIdPublicId] = useState<string>('');
+  const [cloudinaryIdPublicId, setCloudinaryIdPublicId] = useState<string | null>(null);
 
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -66,7 +66,7 @@ const CreateTicket = () => {
 
   const handleDeleteImage = () => {
 
-    setCloudinaryIdPublicId('');
+    setCloudinaryIdPublicId(null);
 
     // implement removal from cloudinary
 
