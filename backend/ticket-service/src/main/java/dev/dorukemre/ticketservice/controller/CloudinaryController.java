@@ -16,6 +16,9 @@ public class CloudinaryController {
 
   private final Cloudinary cloudinary;
 
+  @Value("${cloudinary.api.key}")
+  private String apiKey;
+
   @Value("${cloudinary.api.secret}")
   private String apiSecret;
 
@@ -34,7 +37,7 @@ public class CloudinaryController {
           apiSecret,
           1);
 
-      return Map.of("signature", signature);
+      return Map.of("signature", signature, "apiKey", apiKey);
 
     } catch (Exception e) {
       throw new RuntimeException("Cloudinary signature failed", e);
