@@ -9,7 +9,7 @@ import { scale } from "@cloudinary/url-gen/actions/resize";
 import { cloudinary } from "@/config/cloudinaryConfig";
 
 import { TicketAssignment } from "@/components/TicketAssignment";
-import { Error } from "@/components/Error";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
@@ -177,7 +177,7 @@ const ViewTicketDetails = () => {
     <>
       <h1 className="visually-hidden">Ticket Detail</h1>
 
-      <Error error={error} />
+      <ErrorMessage error={error} />
 
       {ticket
         && !(isLoading.isLoadingTicket || isLoading.isLoadingAgentsList)

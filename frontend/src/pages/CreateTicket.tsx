@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 
 import { Badge, Button, Container, Form, Spinner } from "react-bootstrap";
 
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { TicketCreationRequest, TicketCreationResponse } from "@/types/ticket";
-import { Error } from "@/components/Error";
 import { uploadToCloudinary } from "@/helper/uploadToCloudinary";
 
 const CreateTicket = () => {
@@ -44,15 +44,21 @@ const CreateTicket = () => {
         // Validate file size
         const MAX_SIZE_BYTES = 2 * 1024 * 1024;
         if (image.size > MAX_SIZE_BYTES) {
-          throw new Error(`File size exceeds ${MAX_SIZE_BYTES} MB limit.`);
+          throw new Error(`File size exceeds 2 MB limit.`);
         }
 
         cloudinaryPublicId = await uploadToCloudinary({ file: image, authApi });
       }
 
-    } catch (err: unknown) {
-      const uploadError = err instanceof Error ? err : new Error(String(err)); console.error("Cloudinary upload failed", uploadError);
-      setError("Image upload failed. Please try again.");
+    } catch (uploadError: unknown) {
+      console.error("Cloudinary upload failed", uploadError);
+
+      if (uploadError instanceof Error)
+        setError("Image upload failed: " + uploadError.message);
+      else
+        setError("Image upload failed. Please try again.");
+
+
       setIsLoading(false);
       return;
     }
@@ -124,7 +130,7 @@ const CreateTicket = () => {
     <>
       <h1 className="visually-hidden">Create Ticket</h1>
 
-      <Error error={error} />
+      <ErrorMessage error={error} />
 
       {ticket ? (
 
@@ -171,6 +177,7 @@ const CreateTicket = () => {
             <Form.Label>Image</Form.Label>
             <Form.Control
               type="file"
+              accept="image/*"
               ref={fileInputRef}
               onChange={handleLoadImage}
             />

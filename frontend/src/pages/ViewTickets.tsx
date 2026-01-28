@@ -3,11 +3,12 @@ import axios from "axios";
 
 import { Tab, Tabs } from "react-bootstrap";
 
+import { TicketList } from "@/components/TicketList";
+import { ErrorMessage } from "@/components/ErrorMessage";
+
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { Ticket } from "@/types/ticket";
-import { TicketList } from "@/components/TicketList";
-import { Error } from "@/components/Error";
 
 
 const ViewTickets = () => {
@@ -70,7 +71,7 @@ const ViewTickets = () => {
     <>
       <h1 className="visually-hidden">View Tickets</h1>
 
-      <Error error={error} />
+      <ErrorMessage error={error} />
 
       {(user?.role == "STANDARD_USER") ? (
         <TicketList
