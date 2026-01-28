@@ -3,7 +3,7 @@ import { Cloudinary } from '@cloudinary/url-gen';
 
 // Cloudinary configuration
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-const uploadPreset = 'servicedesk-tickets'; // defined on cloudinary.com
+const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const cld = new Cloudinary({
   cloud: {
@@ -15,10 +15,8 @@ const cld = new Cloudinary({
 const uwConfig = {
   cloudName,
   uploadPreset,
-  cropping: true,
   sources: ['local', 'url', 'camera'],
   multiple: false,
-  // folder: 'service_desk', // defined in the uploadPreset
   clientAllowedFormats: ['jpg', 'jpeg', 'tif', 'tiff', 'png', 'gif', 'webp'],
   maxImageFileSize: 2000000,
   maxImageWidth: 2000,

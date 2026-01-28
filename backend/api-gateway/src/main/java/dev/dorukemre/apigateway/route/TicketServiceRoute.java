@@ -54,6 +54,14 @@ public class TicketServiceRoute {
                 .filter(jwtHeadersFilter))
             .uri(uri))
 
+        .route("get-cloudinary-signature", r -> r
+            .path("/cloudinary/signature")
+            .and().method(HttpMethod.POST)
+            .filters(f -> f
+                .prefixPath("/api/v1/ticket")
+                .filter(jwtHeadersFilter))
+            .uri(uri))
+
         // service desk user routes
 
         .route("list-all-tickets", r -> r

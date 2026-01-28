@@ -2,33 +2,47 @@ import { useEffect, useRef } from 'react';
 
 import { uwConfig } from '@/config/cloudinaryConfig';
 import { Button } from 'react-bootstrap';
+import { useAuthApi } from '@/hooks/useAuthApi';
 
 // Adapted from:
 // https://cloudinary.com/documentation/upload_widget 
 // https://stackblitz.com/edit/cloudinary-upload-widget-react
+
 
 type Props = {
   setPublicId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const CloudinaryUploadWidget = ({ setPublicId }: Props) => {
+  const authApi = useAuthApi();
   const uploadWidgetRef = useRef<{ open: () => void; } | null>(null);
-
   const uploadButtonRef = useRef<HTMLButtonElement | null>(null);
 
+
   useEffect(() => {
-    const initializeUploadWidget = () => {
+    const initializeUploadWidget = async () => {
       if (window.cloudinary && uploadButtonRef.current) {
+
         // Create upload widget
         uploadWidgetRef.current = window.cloudinary
           .createUploadWidget(
-            uwConfig,
+            {
+              ...uwConfig,
+              api_key: import.meta.env.VITE_CLOUDINARY_API_KEY,
+              uploadSignature: async (callback: any, paramsToSign: any) => {
+                const response = await authApi.post('/cloudinary/signature', {
+                  paramsToSign,
+                });
+
+                callback(response.data.signature);
+              },
+            },
             (error: any, result: any) => {
               if (!error && result && result.event === 'success') {
                 console.log('Upload successful:', result.info);
                 setPublicId(result.info.public_id);
               } else if (error) {
-                console.error(error);
+                console.error('Upload error:', error);
               }
             }
           );
