@@ -5,15 +5,17 @@ import { useParams } from "react-router-dom";
 import { ListGroup, Spinner } from "react-bootstrap";
 
 import { AdvancedImage, placeholder, responsive } from "@cloudinary/react";
-import { cld } from "@/config/cloudinaryConfig";
+import { scale } from "@cloudinary/url-gen/actions/resize";
+import { cloudinary } from "@/config/cloudinaryConfig";
+
+import { TicketAssignment } from "@/components/TicketAssignment";
+import { Error } from "@/components/Error";
 
 import { useAuth } from "@/auth/useAuth";
-import { TicketAssignment } from "@/components/TicketAssignment";
 import { useAuthApi } from "@/hooks/useAuthApi";
 
 import type { User } from "@/types/auth";
 import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } from "@/types/ticket";
-import { Error } from "@/components/Error";
 
 
 const ViewTicketDetails = () => {
@@ -224,13 +226,13 @@ const ViewTicketDetails = () => {
 
 
             <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap"
-              style={ticket.cloudinaryIdPublicId ? { height: "200px" } : {}}             >
+              style={ticket.cloudinaryPublicId ? { height: "200px" } : {}}             >
               <p className="fw-bold">Image:</p>{" "}
-              {ticket.cloudinaryIdPublicId && (
+              {ticket.cloudinaryPublicId && (
                 <AdvancedImage
                   className="rounded h-100"
                   style={{ maxHeight: '100%' }}
-                  cldImg={cld.image(ticket.cloudinaryIdPublicId)}
+                  cldImg={cloudinary.image(ticket.cloudinaryPublicId).resize(scale().height(200))}
                   plugins={[responsive(), placeholder()]}
                 />
               )}

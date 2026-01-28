@@ -49,7 +49,7 @@ public class Ticket {
 
   private List<String> tags;
 
-  private String cloudinaryIdPublicId;
+  private String cloudinaryPublicId;
 
   // @DBRef // To map to User entity instead of using userId
   // private User user;

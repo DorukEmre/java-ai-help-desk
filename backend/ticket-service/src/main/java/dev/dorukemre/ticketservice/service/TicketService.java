@@ -40,8 +40,8 @@ public class TicketService {
 
     Ticket ticket = new Ticket();
     ticket.setDescription(request.getDescription());
-    if (request.getCloudinaryIdPublicId() != null)
-      ticket.setCloudinaryIdPublicId(request.getCloudinaryIdPublicId());
+    if (request.getCloudinaryPublicId() != null)
+      ticket.setCloudinaryPublicId(request.getCloudinaryPublicId());
     ticket.setUserId(headerUserId);
     Ticket savedTicket = ticketRepository.save(ticket);
 
