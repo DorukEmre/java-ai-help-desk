@@ -187,7 +187,7 @@ const ViewTicketDetails = () => {
 
             <TicketInfoItem
               label="Description:"
-              value={<div>{ticket.description}</div>}
+              value={<div style={{ whiteSpace: 'pre-wrap' }}>{ticket.description}</div>}
               noFlex
             />
 
