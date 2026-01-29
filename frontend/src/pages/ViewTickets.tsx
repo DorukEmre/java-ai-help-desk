@@ -1,71 +1,39 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
-import { Tab, Tabs } from "react-bootstrap";
-
-import { TicketList } from "@/components/TicketList";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 import type { Ticket } from "@/types/ticket";
+import ViewTicketsStandard from "@/components/ViewTicketsStandard";
+import ViewTicketsServiceDesk from "@/components/ViewTicketsServiceDesk";
 
 
 const ViewTickets = () => {
 
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const { user } = useAuth();
   const authApi = useAuthApi();
 
+  const {
+    data: tickets,
+    error,
+    isLoading,
+  } = useQuery<Ticket[], Error>({
+    queryKey: ["tickets", user?.id, user?.role],
+    queryFn: async () => {
 
-  useEffect(() => {
+      const url =
+        user?.role === "STANDARD_USER"
+          ? `/users/${user.id}/tickets`
+          : `/tickets`;
 
-    const getTickets = async (url: string) => {
-      setIsLoading(true);
+      const response = await authApi.get<Ticket[]>(url);
+      return response.data;
+    },
+    enabled: Boolean(user?.id),
+  });
 
-      try {
-
-        const response = await authApi.get(url,
-          {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true,
-          },);
-        console.log("Response.data:", response.data);
-
-        setTickets(response.data);
-
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          console.error("Unexpected error:", error);
-          if (error.response.data.message)
-            setError(error.response.data.message);
-          else if (error.response.status)
-            setError("Unexpected error: " + error.response.status.toString());
-          else
-            setError('An unexpected error occurred.');
-
-        } else {
-          setError('An unexpected error occurred.');
-          console.error("Unexpected error:", error);
-        }
-
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    let url: string;
-
-    if (user?.role == "STANDARD_USER")
-      url = `/users/${user?.id}/tickets`;
-    else
-      url = `/tickets`;
-
-    getTickets(url);
-
-  }, [authApi, user?.id, user?.role]);
+  const safeTickets: Ticket[] = tickets ?? [];
 
   return (
     <>
@@ -74,32 +42,21 @@ const ViewTickets = () => {
       <ErrorMessage error={error} />
 
       {(user?.role == "STANDARD_USER") ? (
-        <TicketList
-          tickets={tickets}
+
+        <ViewTicketsStandard
+          tickets={safeTickets}
           isLoading={isLoading}
         />
+
       ) : (
 
-        <Tabs
-          defaultActiveKey="my"
-          id="view-tickets"
-          className="mb-3 mx-auto"
-        >
-          <Tab eventKey="my" title="My tickets">
-            <TicketList
-              tickets={tickets.filter(ticket => ticket.agentId == user?.id)}
-              isLoading={isLoading}
-            />
-          </Tab>
-          <Tab eventKey="unassigned" title="Unassigned tickets">
-            <TicketList
-              tickets={tickets.filter(ticket => ticket.agentId == null || ticket.agentId === undefined)}
-              isLoading={isLoading}
-            />
-          </Tab>
-        </Tabs>
-      )}
+        <ViewTicketsServiceDesk
+          tickets={safeTickets}
+          userId={user?.id!}
+          isLoading={isLoading}
+        />
 
+      )}
     </>
   );
 }
