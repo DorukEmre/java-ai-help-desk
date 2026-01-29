@@ -82,8 +82,8 @@ const ViewTickets = () => {
 
         <Tabs
           defaultActiveKey="my"
-          id="uncontrolled-tab-example"
-          className="mb-3 mx-auto" style={{ maxWidth: "800px" }}
+          id="view-tickets"
+          className="mb-3 mx-auto"
         >
           <Tab eventKey="my" title="My tickets">
             <TicketList

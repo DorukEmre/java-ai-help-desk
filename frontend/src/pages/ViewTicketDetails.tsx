@@ -182,7 +182,7 @@ const ViewTicketDetails = () => {
       {ticket
         && !(isLoading.isLoadingTicket || isLoading.isLoadingAgentsList)
         ? (
-          <ListGroup as="ul" className="mx-auto" style={{ maxWidth: "800px" }}>
+          <ListGroup as="ul" className="mx-auto">
 
             <ListGroup.Item as="li" className="">
               <p className="fw-bold">Description:</p>

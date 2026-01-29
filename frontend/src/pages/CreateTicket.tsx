@@ -135,8 +135,8 @@ const CreateTicket = () => {
       {ticket ? (
 
         // Show ticket after successful creation
-        <Container style={{ maxWidth: "800px" }}>
-          <div className="d-flex justify-content-between align-items-center mx-auto mb-3" style={{ maxWidth: '366px' }}>
+        <Container>
+          <div className="d-flex justify-content-between align-items-center mx-auto mb-4" style={{ maxWidth: '400px' }}>
             <p>Ticket successfully created</p>
             <Button variant="primary" type="button" onClick={resetTicket}>
               New Ticket

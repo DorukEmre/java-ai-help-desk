@@ -73,7 +73,7 @@ const Login = () => {
   };
 
   return (
-    <Container fluid className="d-flex flex-column align-items-center gap-2" style={{ maxWidth: '600px' }}>
+    <Container fluid className="d-flex flex-column align-items-center gap-2">
 
       <div>
         <p className="text-muted">

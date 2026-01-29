@@ -19,29 +19,31 @@ function App() {
       <Header />
 
       <main className="flex-fill py-2 p-sm-5">
-        <Routes>
+        <div className="mx-auto" style={{ maxWidth: "640px" }}>
+          <Routes>
 
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
 
-          {/* Protected Routes */}
+            {/* Protected Routes */}
 
-          {/* STANDARD_USER Routes */}
-          <Route path="/tickets/create" element={<ProtectedRoute allowedRoles={["STANDARD_USER"]}><CreateTicket /></ProtectedRoute>} />
+            {/* STANDARD_USER Routes */}
+            <Route path="/tickets/create" element={<ProtectedRoute allowedRoles={["STANDARD_USER"]}><CreateTicket /></ProtectedRoute>} />
 
-          {/* Any Role Routes */}
-          <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
+            {/* Any Role Routes */}
+            <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
 
-            <Route path="/tickets/view" element={<ViewTickets />} />
-            <Route path="/tickets/:ticketId" element={<ViewTicketDetails />} />
+              <Route path="/tickets/view" element={<ViewTickets />} />
+              <Route path="/tickets/:ticketId" element={<ViewTicketDetails />} />
 
-          </Route>
+            </Route>
 
-          {/* 404 - Fallback */}
-          <Route path="*" element={<Page404 />} />
+            {/* 404 - Fallback */}
+            <Route path="*" element={<Page404 />} />
 
-        </Routes>
+          </Routes>
+        </div>
       </main>
 
     </Container>

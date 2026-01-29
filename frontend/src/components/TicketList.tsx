@@ -17,20 +17,20 @@ export const TicketList = ({ tickets, isLoading }: Props) => {
   return (
     <>
       {isLoading && (
-        <div className="mx-auto" style={{ maxWidth: "800px" }}>
+        <>
           <span >Loading... </span>
           <Spinner animation="border" size="sm" role="status" />
-        </div>
+        </>
       )}
 
       {!isLoading && tickets.length == 0 && (
-        <div className="mx-auto" style={{ maxWidth: "800px" }}>
+        <>
           <p>No tickets found.</p>
-        </div>
+        </>
       )}
 
       {!isLoading && tickets.length > 0 && (
-        <Accordion as={Col} defaultActiveKey={['0']} alwaysOpen className="mx-auto" style={{ maxWidth: "800px" }}>
+        <Accordion as={Col} defaultActiveKey={['0']} alwaysOpen className="mx-auto">
 
           <Accordion.Item eventKey="0">
 
