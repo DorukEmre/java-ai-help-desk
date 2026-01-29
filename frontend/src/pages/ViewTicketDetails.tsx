@@ -16,6 +16,7 @@ import { useAuthApi } from "@/hooks/useAuthApi";
 
 import type { User } from "@/types/auth";
 import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } from "@/types/ticket";
+import { TicketInfoItem } from "@/components/TicketInfoItem";
 
 
 const ViewTicketDetails = () => {
@@ -184,10 +185,11 @@ const ViewTicketDetails = () => {
         ? (
           <ListGroup as="ul" className="mx-auto">
 
-            <ListGroup.Item as="li" className="">
-              <p className="fw-bold">Description:</p>
-              <div>{ticket.description}</div>
-            </ListGroup.Item>
+            <TicketInfoItem
+              label="Description:"
+              value={<div>{ticket.description}</div>}
+              noFlex
+            />
 
             {(user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN") ? (
               <TicketAssignment
@@ -200,35 +202,36 @@ const ViewTicketDetails = () => {
               />
             ) : (
               <>
-                <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
-                  <p className="fw-bold">Status:</p> {ticket.status.toLocaleLowerCase()}
-                </ListGroup.Item>
-                <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
-                  <p className="fw-bold">Assigned Agent:</p>{" "}
-                  {ticket.agentId ?? "Unassigned"}
-                </ListGroup.Item>
+                <TicketInfoItem
+                  label="Status:"
+                  value={ticket.status.toLocaleLowerCase()}
+                />
+                <TicketInfoItem
+                  label="Assigned Agent:"
+                  value={ticket.agentId ?? "Unassigned"}
+                />
               </>
             )}
 
-            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
-              <p className="fw-bold">Created At:</p>{" "}
-              {new Date(ticket.createdAt).toLocaleString()}
-            </ListGroup.Item>
+            <TicketInfoItem
+              label="Created At:"
+              value={new Date(ticket.createdAt).toLocaleString()}
+            />
 
-            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
-              <p className="fw-bold">Last Updated:</p>{" "}
-              {new Date(ticket.updatedAt).toLocaleString()}
-            </ListGroup.Item>
+            <TicketInfoItem
+              label="Last Updated:"
+              value={new Date(ticket.updatedAt).toLocaleString()}
+            />
 
-            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
-              <p className="fw-bold">Created By (User ID):</p> {ticket.userId}
-            </ListGroup.Item>
+            <TicketInfoItem
+              label="Created By (User ID):"
+              value={ticket.userId}
+            />
 
-
-            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap"
-              style={ticket.cloudinaryPublicId ? { height: "200px" } : {}}             >
-              <p className="fw-bold">Image:</p>{" "}
-              {ticket.cloudinaryPublicId && (
+            <TicketInfoItem
+              style={ticket.cloudinaryPublicId ? { height: "200px" } : {}}
+              label="Image:"
+              value={ticket.cloudinaryPublicId && (
                 <AdvancedImage
                   className="rounded h-100"
                   style={{ maxHeight: '100%' }}
@@ -236,19 +239,19 @@ const ViewTicketDetails = () => {
                   plugins={[responsive(), placeholder()]}
                 />
               )}
-            </ListGroup.Item>
+              noWrapper
+            />
 
-            <ListGroup.Item as="li" className="d-flex justify-content-between flex-wrap">
-              <p className="fw-bold">Tags:</p>{" "}
-              {ticket.tags && ticket.tags.length > 0
+            <TicketInfoItem
+              label="Tags:"
+              value={ticket.tags && ticket.tags.length > 0
                 ? ticket.tags.join(", ")
                 : "None"}
-            </ListGroup.Item>
+            />
 
-            <ListGroup.Item as="li">
-              <p className="fw-bold">Actions:</p>
-
-              {ticket.actions && ticket.actions.length > 0 ? (
+            <TicketInfoItem
+              label="Actions:"
+              value={ticket.actions && ticket.actions.length > 0 ? (
                 <ListGroup as="ul" className="mt-2">
                   {ticket.actions.map((action, index) => (
                     <ListGroup.Item as="li" key={index}>
@@ -269,9 +272,10 @@ const ViewTicketDetails = () => {
                   ))}
                 </ListGroup>
               ) : (
-                <div className="mt-1">No actions recorded</div>
+                <div>No actions recorded</div>
               )}
-            </ListGroup.Item>
+              noWrapper
+            />
 
           </ListGroup>
         ) : (
