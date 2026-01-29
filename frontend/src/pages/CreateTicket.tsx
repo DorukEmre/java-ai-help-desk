@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import { Badge, Button, Container, Form, Spinner } from "react-bootstrap";
+import { Badge, Button, CloseButton, Container, Form, Spinner } from "react-bootstrap";
 
 import { ErrorMessage } from "@/components/ErrorMessage";
 
@@ -185,18 +185,23 @@ const CreateTicket = () => {
 
           {image && imagePreviewUrl && (
             // Show image preview
-            <div className="mb-3 position-relative" style={{ height: "200px" }}>
-              <img
-                src={imagePreviewUrl}
-                alt="Preview"
-                className="rounded h-100 mx-auto"
-                style={{ maxHeight: '100%', objectFit: "contain" }}
-              />
-              <Button
-                className="m-1 position-absolute top-0 end-0 btn btn-danger"
-                onClick={handleDeleteImage}>
-                X
-              </Button>
+            <div className="mb-3" style={{ height: "200px" }}>
+              <div
+                className="position-relative h-100 mx-auto"
+                style={{ height: "200px", maxWidth: "fit-content" }}
+              >
+                <img
+                  src={imagePreviewUrl}
+                  alt="Preview"
+                  className="rounded h-100 mx-auto"
+                  style={{ maxHeight: '100%', objectFit: "contain" }}
+                />
+                <CloseButton
+                  className="m-1 p-2 position-absolute top-0 end-0 bg-light"
+                  onClick={handleDeleteImage}
+                  aria-label="Delete image"
+                />
+              </div>
             </div>
           )}
 
