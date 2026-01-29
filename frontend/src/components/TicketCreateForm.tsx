@@ -126,6 +126,7 @@ export const TicketCreateForm = ({ setTicket, setError, resetKey, }: Props) => {
         type="submit"
         disabled={isLoading}
         isLoading={isLoading}
+        style={{ width: "145px" }}
       >
         Create Ticket
       </RequestButton>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { InputGroup, Form, Button, ListGroup, Spinner } from "react-bootstrap";
+import { InputGroup, Form, ListGroup } from "react-bootstrap";
+
+import { RequestButton } from "@/components/RequestButton";
 
 import type { User } from "@/types/auth";
 import type { TicketLoadingState } from "@/types/ticket";
@@ -40,14 +42,16 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
   return (
     <>
       {/* Status selector */}
-
-      <ListGroup.Item as="li" className="d-flex justify-content-between align-items-center flex-wrap">
-        <p className="fw-bold">Status:</p>{" "}
+      <ListGroup.Item as="li"
+        className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center"
+      >
+        <p className="fw-bold mb-1 mb-sm-0">Status:</p>
 
         <InputGroup className="d-flex align-items-center w-auto">
+
           <Form.Select
             className="ms-auto"
-            style={{ minWidth: "175px", maxWidth: "250px" }}
+            style={{ minWidth: "150px", maxWidth: "250px" }}
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -55,29 +59,31 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
             <option value="IN_PROGRESS">In Progress</option>
             <option value="CLOSED">Closed</option>
           </Form.Select>
-          <Button variant="outline-secondary" onClick={onUpdateStatus} disabled={anyLoading} style={{ width: "75px" }}
+
+          <RequestButton
+            variant="outline-secondary"
+            onClick={onUpdateStatus}
+            disabled={anyLoading}
+            isLoading={isLoading.isUpdatingStatus}
+            style={{ width: "105px" }}
           >
-            Update{' '}
-            {isLoading.isUpdatingStatus && (
-              <>
-                <Spinner as="span"
-                  animation="border" size="sm" role="status" aria-hidden="true"
-                />
-                <span className="visually-hidden">Loading...</span>
-              </>
-            )}
-          </Button>
+            Update
+          </RequestButton>
+
         </InputGroup>
       </ListGroup.Item>
 
       {/* Agent selector */}
-      <ListGroup.Item as="li" className="d-flex justify-content-between align-items-center flex-wrap">
-        <p className="fw-bold">Assigned Agent:</p>{" "}
+      <ListGroup.Item as="li"
+        className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center"
+      >
+        <p className="fw-bold mb-1 mb-sm-0">Assigned Agent:</p>
 
         <InputGroup className="d-flex align-items-center w-auto">
+
           <Form.Select
             className="ms-auto"
-            style={{ minWidth: "175px", maxWidth: "250px" }}
+            style={{ minWidth: "150px", maxWidth: "250px" }}
             value={selectedAgent}
             onChange={(e) => setSelectedAgent(e.target.value)}
           >
@@ -88,18 +94,17 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
               </option>
             ))}
           </Form.Select>
-          <Button variant="outline-secondary" onClick={onUpdateAgentId} disabled={anyLoading} style={{ width: "75px" }}
+
+          <RequestButton
+            variant="outline-secondary"
+            onClick={onUpdateAgentId}
+            disabled={anyLoading}
+            isLoading={isLoading.isUpdatingAgent}
+            style={{ width: "105px" }}
           >
-            Assign{' '}
-            {isLoading.isUpdatingAgent && (
-              <>
-                <Spinner as="span"
-                  animation="border" size="sm" role="status" aria-hidden="true"
-                />
-                <span className="visually-hidden">Loading...</span>
-              </>
-            )}
-          </Button>
+            Assign
+          </RequestButton>
+
         </InputGroup>
       </ListGroup.Item>
     </>

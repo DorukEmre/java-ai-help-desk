@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import { Container, Form, Button, Spinner } from 'react-bootstrap';
+import { Container, Form } from 'react-bootstrap';
 
 import { ErrorMessage } from '@/components/ErrorMessage';
 
 import { addBaseUrl } from '@/utils/globals';
 import { useAuth } from '@/auth/useAuth';
+import { RequestButton } from '@/components/RequestButton';
 
 
 const Login = () => {
@@ -116,17 +117,16 @@ const Login = () => {
             required />
         </Form.Group>
 
-        <Button variant="primary" type="submit" disabled={isLoading}>
-          Log in{' '}
-          {isLoading && (
-            <>
-              <Spinner as="span"
-                animation="border" size="sm" role="status" aria-hidden="true"
-              />
-              <span className="visually-hidden">Loading...</span>
-            </>
-          )}
-        </Button>
+        <RequestButton
+          variant="primary"
+          type="submit"
+          disabled={isLoading}
+          isLoading={isLoading}
+          style={{ width: "105px" }}
+        >
+          Log in
+        </RequestButton>
+
       </Form>
 
     </Container>
