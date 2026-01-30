@@ -6,9 +6,10 @@ import { TicketListAccordion } from "./TicketListAccordion";
 interface Props {
   tickets: Ticket[];
   isLoading: boolean;
+  noTabs?: boolean;
 }
 
-export const TicketList = ({ tickets, isLoading }: Props) => {
+export const TicketList = ({ tickets, isLoading, noTabs = false }: Props) => {
 
   const activeTickets = tickets.filter(ticket => ticket.status.toUpperCase() != 'CLOSED');
   const closedTickets = tickets.filter(ticket => ticket.status.toUpperCase() === 'CLOSED');
@@ -29,7 +30,8 @@ export const TicketList = ({ tickets, isLoading }: Props) => {
       )}
 
       {!isLoading && tickets.length > 0 && (
-        <Accordion as={Col} defaultActiveKey={['0']} alwaysOpen flush className="mx-auto">
+        <Accordion as={Col} defaultActiveKey={['0']} alwaysOpen flush
+          className={`mx-auto ${noTabs ? 'no-tabs' : ''}`}>
 
           <Accordion.Item eventKey="0">
 

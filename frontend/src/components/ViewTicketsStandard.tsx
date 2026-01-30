@@ -13,6 +13,7 @@ const ViewTicketsStandard = ({ tickets, isLoading }: Props) => {
     <TicketList
       tickets={tickets}
       isLoading={isLoading}
+      noTabs
     />
 
   );

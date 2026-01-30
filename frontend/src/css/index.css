@@ -77,6 +77,10 @@ h6 {
   border-right: 1px solid #495057;
 }
 
+.no-tabs.accordion {
+  border-top: 1px solid #495057;
+}
+
 .ticket-list-item {
   border-left: none;
   border-right: none;
