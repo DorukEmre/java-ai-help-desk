@@ -1,7 +1,10 @@
 import { useMemo } from "react";
 import { Tabs, Tab } from "react-bootstrap";
+
 import { TicketList } from "@/components/TicketList";
+
 import type { Ticket } from "@/types/ticket";
+
 
 interface Props {
   tickets: Ticket[];
@@ -9,7 +12,7 @@ interface Props {
   isLoading: boolean;
 }
 
-const ViewTicketsServiceDesk = ({ tickets, userId, isLoading }: Props) => {
+export const ViewTicketsServiceDesk = ({ tickets, userId, isLoading }: Props) => {
 
   const myTickets = useMemo(
     () => tickets.filter(ticket => ticket.agentId === userId),
@@ -45,5 +48,3 @@ const ViewTicketsServiceDesk = ({ tickets, userId, isLoading }: Props) => {
     </Tabs>
   );
 };
-
-export default ViewTicketsServiceDesk;

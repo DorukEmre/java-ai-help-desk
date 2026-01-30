@@ -1,12 +1,14 @@
 import { TicketList } from "@/components/TicketList";
+
 import type { Ticket } from "@/types/ticket";
+
 
 interface Props {
   tickets: Ticket[];
   isLoading: boolean;
 }
 
-const ViewTicketsStandard = ({ tickets, isLoading }: Props) => {
+export const ViewTicketsStandard = ({ tickets, isLoading }: Props) => {
 
   return (
 
@@ -18,5 +20,3 @@ const ViewTicketsStandard = ({ tickets, isLoading }: Props) => {
 
   );
 };
-
-export default ViewTicketsStandard;
