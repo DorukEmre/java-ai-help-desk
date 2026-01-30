@@ -8,7 +8,7 @@ interface Props {
   noFlex?: boolean;
 }
 
-export const TicketInfoItem = (
+export const TicketDetailsInfoItem = (
   { style, label, value, noWrapper = false, noFlex = false }: Props
 ) => {
 

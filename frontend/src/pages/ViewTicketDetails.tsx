@@ -9,6 +9,7 @@ import { scale } from "@cloudinary/url-gen/actions/resize";
 import { cloudinary } from "@/config/cloudinaryConfig";
 
 import { TicketAssignment } from "@/components/TicketAssignment";
+import { TicketDetailsInfoItem } from "@/components/TicketDetailsInfoItem";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
 import { useAuth } from "@/auth/useAuth";
@@ -16,8 +17,6 @@ import { useAuthApi } from "@/hooks/useAuthApi";
 
 import type { User } from "@/types/auth";
 import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } from "@/types/ticket";
-import { TicketInfoItem } from "@/components/TicketInfoItem";
-
 
 const ViewTicketDetails = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
@@ -185,7 +184,7 @@ const ViewTicketDetails = () => {
         ? (
           <ListGroup as="ul" className="mx-auto">
 
-            <TicketInfoItem
+            <TicketDetailsInfoItem
               label="Description:"
               value={<div style={{ whiteSpace: 'pre-wrap' }}>{ticket.description}</div>}
               noFlex
@@ -202,33 +201,33 @@ const ViewTicketDetails = () => {
               />
             ) : (
               <>
-                <TicketInfoItem
+                <TicketDetailsInfoItem
                   label="Status:"
                   value={ticket.status.toLocaleLowerCase()}
                 />
-                <TicketInfoItem
+                <TicketDetailsInfoItem
                   label="Assigned Agent:"
                   value={ticket.agentId ?? "Unassigned"}
                 />
               </>
             )}
 
-            <TicketInfoItem
+            <TicketDetailsInfoItem
               label="Created At:"
               value={new Date(ticket.createdAt).toLocaleString()}
             />
 
-            <TicketInfoItem
+            <TicketDetailsInfoItem
               label="Last Updated:"
               value={new Date(ticket.updatedAt).toLocaleString()}
             />
 
-            <TicketInfoItem
+            <TicketDetailsInfoItem
               label="Created By (User ID):"
               value={ticket.userId}
             />
 
-            <TicketInfoItem
+            <TicketDetailsInfoItem
               style={ticket.cloudinaryPublicId ? { height: "200px" } : {}}
               label="Image:"
               value={ticket.cloudinaryPublicId && (
@@ -242,14 +241,14 @@ const ViewTicketDetails = () => {
               noWrapper
             />
 
-            <TicketInfoItem
+            <TicketDetailsInfoItem
               label="Tags:"
               value={ticket.tags && ticket.tags.length > 0
                 ? ticket.tags.join(", ")
                 : "None"}
             />
 
-            <TicketInfoItem
+            <TicketDetailsInfoItem
               label="Actions:"
               value={ticket.actions && ticket.actions.length > 0 ? (
                 <ListGroup as="ul" className="mt-2">
