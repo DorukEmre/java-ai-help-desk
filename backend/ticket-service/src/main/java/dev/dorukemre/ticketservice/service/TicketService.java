@@ -70,7 +70,7 @@ public class TicketService {
 
     // Standard user can only list its own tickets
     if (!pathUserId.equals(headerUserId)
-        && role != Role.SERVICE_DESK_USER && role != Role.ADMIN) {
+        && role != Role.AGENT && role != Role.ADMIN) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User ID mismatch");
     }
 
@@ -98,7 +98,7 @@ public class TicketService {
 
     // Standard user can only see its own ticket
     if (!userId.equals(ticket.getUserId())
-        && role != Role.SERVICE_DESK_USER && role != Role.ADMIN) {
+        && role != Role.AGENT && role != Role.ADMIN) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User ID mismatch");
     }
 

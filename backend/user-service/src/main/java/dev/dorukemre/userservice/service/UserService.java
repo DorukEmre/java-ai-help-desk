@@ -122,7 +122,7 @@ public class UserService {
 
     User user = userRepository.findById(agentId).orElseThrow(() -> new UserNotFoundException(agentId));
 
-    if (!EnumSet.of(Role.SERVICE_DESK_USER, Role.ADMIN).contains(user.getRole())) {
+    if (!EnumSet.of(Role.AGENT, Role.ADMIN).contains(user.getRole())) {
       throw new InvalidAgentRoleException(agentId);
     }
   }

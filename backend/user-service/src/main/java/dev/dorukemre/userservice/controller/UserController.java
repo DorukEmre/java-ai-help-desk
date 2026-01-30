@@ -75,7 +75,7 @@ public class UserController {
   }
 
   // @Operation(summary = "Check user is a valid agent", description = "Checks if
-  // the user exists and has role SERVICE_DESK_USER or ADMIN")
+  // the user exists and has role AGENT or ADMIN")
   @GetMapping("/users/{agentId}/check")
   public ResponseEntity<Void> checkAgent(@PathVariable("agentId") String agentId) {
     System.out.println("GET /api/v1/user/users/{agentId}/check called");

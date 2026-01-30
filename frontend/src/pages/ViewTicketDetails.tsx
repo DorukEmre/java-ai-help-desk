@@ -46,7 +46,7 @@ const ViewTicketDetails = () => {
 
       try {
 
-        const url = `/users?role=SERVICE_DESK_USER`;
+        const url = `/users?role=AGENT`;
 
         const response = await authApi.get(url);
         console.log("getAgentsList:", response.data);
@@ -72,7 +72,7 @@ const ViewTicketDetails = () => {
       }
     }
 
-    if (user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN")
+    if (user?.role == "AGENT" || user?.role == "ADMIN")
       getAgentsList();
 
   }, [authApi, user?.role]);
@@ -192,7 +192,7 @@ const ViewTicketDetails = () => {
               noFlex
             />
 
-            {(user?.role == "SERVICE_DESK_USER" || user?.role == "ADMIN") ? (
+            {(user?.role == "AGENT" || user?.role == "ADMIN") ? (
               <TicketAssignment
                 currentStatus={ticket.status}
                 handleUpdateStatus={handleUpdateStatus}

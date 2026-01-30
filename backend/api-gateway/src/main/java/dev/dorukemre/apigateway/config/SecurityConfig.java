@@ -42,26 +42,26 @@ public class SecurityConfig {
 
             // standard user endpoints
             .pathMatchers(HttpMethod.GET, "/users/{userId}/tickets")
-            .hasAnyRole("STANDARD_USER", "SERVICE_DESK_USER", "ADMIN")
+            .hasAnyRole("STANDARD_USER", "AGENT", "ADMIN")
 
             .pathMatchers(HttpMethod.POST, "/users/{userId}/tickets")
             .hasAnyRole("STANDARD_USER", "ADMIN")
 
             .pathMatchers(HttpMethod.GET, "/tickets/{ticketId}")
-            .hasAnyRole("STANDARD_USER", "SERVICE_DESK_USER", "ADMIN")
+            .hasAnyRole("STANDARD_USER", "AGENT", "ADMIN")
 
             .pathMatchers(HttpMethod.POST, "/cloudinary/signature")
             .hasAnyRole("STANDARD_USER", "ADMIN")
 
             // service desk user endpoints
             .pathMatchers(HttpMethod.GET, "/tickets")
-            .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
+            .hasAnyRole("AGENT", "ADMIN")
 
             .pathMatchers(HttpMethod.PATCH, "/tickets/{ticketId}")
-            .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
+            .hasAnyRole("AGENT", "ADMIN")
 
             .pathMatchers(HttpMethod.GET, "/users")
-            .hasAnyRole("SERVICE_DESK_USER", "ADMIN")
+            .hasAnyRole("AGENT", "ADMIN")
 
             // admin endpoints
 
