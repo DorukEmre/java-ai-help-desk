@@ -25,7 +25,7 @@ const ViewTicketsServiceDesk = ({ tickets, userId, isLoading }: Props) => {
     <Tabs
       defaultActiveKey="my"
       id="view-tickets"
-      className="mb-3 mx-auto"
+      className="mx-auto"
     >
 
       <Tab eventKey="my" title="My tickets">

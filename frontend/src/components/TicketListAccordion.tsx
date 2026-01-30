@@ -20,46 +20,54 @@ export const TicketListAccordion = ({ header, tickets }: Props) => {
         {header}
       </Accordion.Header>
 
-      <Accordion.Body style={{ maxHeight: '300px', overflowY: 'scroll' }}>
+      <Accordion.Body
+        className="p-0"
+        style={{ maxHeight: '300px', overflowY: 'scroll' }}
+      >
         {tickets.length > 0 ? (
-          <ListGroup as="ul">
+          <ListGroup as="ul" className="rounded-0">
             {tickets.map((ticket) => (
               <ListGroup.Item as="li" key={ticket.id}
-                className="d-flex flex-column justify-content-between align-items-start gap-2"
+                className="ticket-list-item p-0"
               >
-                {/* status + date */}
-                <div
-                  className="d-flex flex-row justify-content-between align-items-center gap-2 w-100"
-                  style={{ minWidth: "145px" }}
+                <Link to={`/tickets/${ticket.id}`}
+                  className="ticket-list-item-link h-100 w-100 d-flex flex-column justify-content-between align-items-start gap-2 py-2 px-3"
                 >
-                  <div className="">
-                    <small>{new Date(ticket.createdAt).toLocaleString()}</small>
+
+                  {/* status + date */}
+                  < div
+                    className="d-flex flex-row justify-content-between align-items-center gap-2 w-100"
+                    style={{ minWidth: "145px" }}
+                  >
+                    <div className="">
+                      <small>{new Date(ticket.createdAt).toLocaleString()}</small>
+                    </div>
+
+                    <Badge
+                      bg="secondary"
+                      className=""
+                    >
+                      {ticket.status.toLocaleLowerCase()}
+                    </Badge>
                   </div>
 
-                  <Badge
-                    bg="secondary"
-                    className=""
-                  >
-                    {ticket.status.toLocaleLowerCase()}
-                  </Badge>
-                </div>
+                  {/* description */}
+                  <div className="">
+                    <p className="fw-bold text-body">
+                      {ticket.description.split(' ').length > 10
+                        ? `${ticket.description.split(' ').slice(0, 10).join(' ')}...`
+                        : ticket.description}
+                    </p>
+                  </div>
 
-                {/* description */}
-                <div className="">
-                  <Link className="fw-bold text-body" to={`/tickets/${ticket.id}`}>
-                    {ticket.description.split(' ').length > 10
-                      ? `${ticket.description.split(' ').slice(0, 10).join(' ')}...`
-                      : ticket.description}
-                  </Link>
-                </div>
-
-              </ListGroup.Item>
+                </Link>
+              </ListGroup.Item >
             ))}
-          </ListGroup>
+          </ListGroup >
         ) : (
-          <p>No tickets.</p>
+          <p className="py-2 px-3">No tickets.</p>
         )}
-      </Accordion.Body>
+      </Accordion.Body >
     </>
   )
 }

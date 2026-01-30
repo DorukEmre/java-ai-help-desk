@@ -29,12 +29,12 @@ export const TicketList = ({ tickets, isLoading }: Props) => {
       )}
 
       {!isLoading && tickets.length > 0 && (
-        <Accordion as={Col} defaultActiveKey={['0']} alwaysOpen className="mx-auto">
+        <Accordion as={Col} defaultActiveKey={['0']} alwaysOpen flush className="mx-auto">
 
           <Accordion.Item eventKey="0">
 
             <TicketListAccordion
-              header={`Active Tickets (${tickets.length})`}
+              header={`Active Tickets (${activeTickets.length})`}
               tickets={activeTickets}
             />
 
@@ -43,7 +43,7 @@ export const TicketList = ({ tickets, isLoading }: Props) => {
           <Accordion.Item eventKey="1">
 
             <TicketListAccordion
-              header={`Closed Tickets ({closedTickets.length})`}
+              header={`Closed Tickets (${closedTickets.length})`}
               tickets={closedTickets}
             />
 
