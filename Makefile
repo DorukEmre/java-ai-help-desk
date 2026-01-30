@@ -1,6 +1,6 @@
 SHELL	= /bin/sh
 
-NAME	= service-desk
+NAME	= help-desk
 
 # Parse .env file and fail if not found
 -include .env
@@ -16,22 +16,22 @@ update_repo:
 	git pull origin main
 
 restart_caddy_prod:
-	docker compose --project-name servicedesk_prod \
-	  -f docker-compose.prod.yml restart servicedesk-caddy
+	docker compose --project-name helpdesk_prod \
+	  -f docker-compose.prod.yml restart helpdesk-caddy
 
 deploy_frontend: update_repo build_frontend_prod restart_caddy_prod
 
 deploy_backend: update_repo
-	docker compose --project-name servicedesk_prod \
+	docker compose --project-name helpdesk_prod \
 	  -f docker-compose.prod.yml build
-	docker compose --project-name servicedesk_prod \
+	docker compose --project-name helpdesk_prod \
 	  -f docker-compose.prod.yml up -d
 	docker image prune -f
 
 
 # Produce common-library artifact and install into local repo
 common_jar:
-	cd backend/servicedesk-common-library && mvn clean install -DskipTests
+	cd backend/helpdesk-common-library && mvn clean install -DskipTests
 
 # Produce backend jar artifacts
 build_jars:
@@ -59,19 +59,19 @@ build_frontend_prod: clean_frontend
 # Build environments
 
 dev: #common_jar
-	docker compose --project-name servicedesk_dev \
+	docker compose --project-name helpdesk_dev \
 	  -f docker-compose.dev.yml up --build
 
 prod: build_frontend_prod build_jars
-	docker compose --project-name servicedesk_prod \
+	docker compose --project-name helpdesk_prod \
 	  -f docker-compose.prod.yml up --build
 
 prod_detached: build_frontend_prod build_jars
-	docker compose --project-name servicedesk_prod \
+	docker compose --project-name helpdesk_prod \
 	  -f docker-compose.prod.yml up -d --build
 
 local_prod: build_frontend_localprod build_jars
-	docker compose --project-name servicedesk_localprod \
+	docker compose --project-name helpdesk_localprod \
 	  -f docker-compose.prod.yml -f docker-compose.localprod.yml up --build
 
 # Maintenance tasks
@@ -80,24 +80,24 @@ clean: clean_frontend
 	cd backend && sudo mvn clean
 
 down_dev:
-	docker compose --project-name servicedesk_dev \
+	docker compose --project-name helpdesk_dev \
 	  -f docker-compose.dev.yml down
 stop_dev:
-	docker compose --project-name servicedesk_dev \
+	docker compose --project-name helpdesk_dev \
 	  -f docker-compose.dev.yml stop
 
 down_prod:
-	docker compose --project-name servicedesk_prod \
+	docker compose --project-name helpdesk_prod \
 	  -f docker-compose.prod.yml down
 stop_prod:
-	docker compose --project-name servicedesk_prod \
+	docker compose --project-name helpdesk_prod \
 	  -f docker-compose.prod.yml stop
 
 down_prod_local:
-	docker compose --project-name servicedesk_localprod \
+	docker compose --project-name helpdesk_localprod \
 	  -f docker-compose.prod.yml -f docker-compose.localprod.yml down
 stop_prod_local:
-	docker compose --project-name servicedesk_localprod \
+	docker compose --project-name helpdesk_localprod \
 	  -f docker-compose.prod.yml -f docker-compose.localprod.yml stop
 
 

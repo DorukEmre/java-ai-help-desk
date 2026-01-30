@@ -53,7 +53,7 @@ public class SecurityConfig {
             .pathMatchers(HttpMethod.POST, "/cloudinary/signature")
             .hasAnyRole("STANDARD_USER", "ADMIN")
 
-            // service desk user endpoints
+            // agent endpoints
             .pathMatchers(HttpMethod.GET, "/tickets")
             .hasAnyRole("AGENT", "ADMIN")
 

@@ -62,7 +62,7 @@ public class TicketController {
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
-  // service desk user routes
+  // agent routes
 
   // @Operation(summary = "List all tickets", description = "Retrieves all
   // tickets.")

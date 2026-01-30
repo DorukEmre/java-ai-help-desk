@@ -62,7 +62,7 @@ public class TicketServiceRoute {
                 .filter(jwtHeadersFilter))
             .uri(uri))
 
-        // service desk user routes
+        // agent routes
 
         .route("list-all-tickets", r -> r
             .path("/tickets")

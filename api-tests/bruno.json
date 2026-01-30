@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "service-desk",
+  "name": "help-desk",
   "type": "collection",
   "ignore": [
     "node_modules",

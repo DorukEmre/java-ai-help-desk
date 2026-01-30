@@ -1,6 +1,6 @@
 localhost {
   tls internal
-	reverse_proxy servicedesk-api-gateway-dev:8000
+	reverse_proxy helpdesk-api-gateway-dev:8000
 	log {
 		output stdout
 		level WARN
