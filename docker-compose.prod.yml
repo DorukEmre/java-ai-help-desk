@@ -1,41 +1,48 @@
+x-restart: &default-restart
+  restart: unless-stopped
+
 services:
 
   helpdesk-caddy:
+    <<: *default-restart
     image: caddy:2.10.2-alpine
-    ports:
-      - "80:80"
-      - "443:443"
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
     depends_on:
-      - helpdesk-api-gateway-prod
+      - helpdesk-api-gateway
     volumes:
       - ./Caddyfile.prod:/etc/caddy/Caddyfile:ro
+      - ./frontend/dist:/usr/share/caddy/react:ro
       - caddy_data:/data
       - caddy_config:/config
     networks:
       - helpdesk-network
+      - proxy-network   # shared external network
       
-  helpdesk-api-gateway-prod:
+  helpdesk-api-gateway:
+    <<: *default-restart
     build:
       context: ./backend/api-gateway
       dockerfile: Dockerfile.prod
-    image: helpdesk-api-gateway-prod
+    image: helpdesk-api-gateway
     working_dir: /app
     expose: [8000]
-    # env_file:
-    #   - .env
     environment:
       SERVER_PORT: "8000"
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
-      USER_BASE_URL: "helpdesk-user-service-prod:8081"
-      TICKET_BASE_URL: "helpdesk-ticket-service-prod:8082"
+      USER_BASE_URL: "helpdesk-user-service:8081"
+      TICKET_BASE_URL: "helpdesk-ticket-service:8082"
+      JWT_KEY: ${JWT_KEY}
     networks:
       - helpdesk-network
       
-  helpdesk-user-service-prod:
+  helpdesk-user-service:
+    <<: *default-restart
     build:
       context: ./backend/user-service
       dockerfile: Dockerfile.prod
-    image: helpdesk-user-service-prod
+    image: helpdesk-user-service
     working_dir: /app
     expose: [8081]
     environment:
@@ -43,27 +50,36 @@ services:
       SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
       SPRING_DATA_MONGODB_DB_NAME: ${SPRING_DATA_MONGODB_DB_NAME}
       API_SERVER_URL: ${API_SERVER_URL_LOCAL}
+      JWT_KEY: ${JWT_KEY}
     networks:
       - helpdesk-network
 
-  helpdesk-ticket-service-prod:
+  helpdesk-ticket-service:
+    <<: *default-restart
     build:
       context: ./backend/ticket-service
       dockerfile: Dockerfile.prod
-    image: helpdesk-ticket-service-prod
+    image: helpdesk-ticket-service
     working_dir: /app
     expose: [8082]
     environment:
       SERVER_PORT: "8082"
       SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
       SPRING_DATA_MONGODB_DB_NAME: ${SPRING_DATA_MONGODB_DB_NAME}
-      API_SERVER_URL: ${API_SERVER_URL_LOCAL}
+      API_SERVER_URL: ${API_SERVER_URL_PROD}
+      USER_BASE_URL: "helpdesk-user-service:8081"
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      POLLINATIONS_API_KEY: ${POLLINATIONS_API_KEY}
     networks:
       - helpdesk-network
       
 networks:
   helpdesk-network:
     driver: bridge
+  proxy-network:
+    external: true
 
 volumes:
   caddy_data:
