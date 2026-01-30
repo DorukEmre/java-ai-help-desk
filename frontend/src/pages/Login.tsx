@@ -74,29 +74,38 @@ const Login = () => {
   };
 
   return (
-    <Container fluid className="d-flex flex-column align-items-center gap-2">
+    <Container fluid className="d-flex flex-column align-items-center gap-2" style={{ maxWidth: '366px' }}>
 
-      <div>
-        <p className="text-muted">
-          To log in as a standard user:
-          Username: standard
-          Password: Standard1
-        </p>
-        <p className="text-muted">
-          To log in as a service desk user:
-          Username: service
-          Password: Service1
-        </p>
-        <p className="text-muted">
-          To log in as an admin:
-          Username: admin
-          Password: Admin1
-        </p>
+      <div className='small'>
+        <p className="text-muted">Demo Login Credentials</p>
+        <ul className="text-muted">
+          <li>
+            <p className='fw-bold'>Standard User:</p>
+            <ul>
+              <li className='ms-4'>Username: <code>standard</code></li>
+              <li className='ms-4'>Password: <code>Standard1</code></li>
+            </ul>
+          </li>
+          <li>
+            <p className='fw-bold'>Agent:</p>
+            <ul>
+              <li className='ms-4'>Username: <code>agent</code></li>
+              <li className='ms-4'>Password: <code>Agent1</code></li>
+            </ul>
+          </li>
+          <li>
+            <p className='fw-bold'>Admin:</p>
+            <ul>
+              <li className='ms-4'>Username: <code>admin</code></li>
+              <li className='ms-4'>Password: <code>Admin1</code></li>
+            </ul>
+          </li>
+        </ul>
       </div>
 
       <ErrorMessage error={error} />
 
-      <Form onSubmit={handleSubmit} className="w-100" style={{ maxWidth: '366px' }}>
+      <Form onSubmit={handleSubmit} className="w-100">
         <Form.Group className="mb-3" controlId="formUsername">
           <Form.Label>Username</Form.Label>
           <Form.Control
