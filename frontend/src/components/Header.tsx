@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 
 import { useAuth } from "@/auth/useAuth";
 
@@ -30,14 +30,17 @@ const Header = () => {
                       <Nav.Link as={Link} to="/tickets/create">Create Ticket</Nav.Link>
                     </Nav.Item>
                   )}
+
                   <Nav.Item>
                     <Nav.Link as={Link} to="/tickets/view">View Tickets</Nav.Link>
                   </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link as="button" onClick={handleLogout} className="nav-logout-button">
+
+                  <NavDropdown title={user?.fullname} id="nav-dropdown">
+                    <NavDropdown.Item as="button" onClick={handleLogout} className="nav-logout-button">
                       Logout
-                    </Nav.Link>
-                  </Nav.Item>
+                    </NavDropdown.Item>
+                  </NavDropdown>
+
                 </>
               ) : (
                 <Nav.Item>
