@@ -46,21 +46,33 @@ clean_frontend:
 
 build_frontend_local: clean_frontend
 	cd frontend && npm ci && \
-	VITE_API_BASE_URL="$(API_SERVER_URL_LOCAL)" npm run build
+	VITE_API_BASE_URL="$(API_SERVER_URL_LOCALPROD)" \
+	VITE_CLOUDINARY_CLOUD_NAME="$(CLOUDINARY_CLOUD_NAME)" \
+	VITE_CLOUDINARY_UPLOAD_PRESET="$(CLOUDINARY_UPLOAD_PRESET)" \
+	VITE_CLOUDINARY_API_KEY="$(CLOUDINARY_API_KEY)" \
+	npm run build
 
 build_frontend_localprod: clean_frontend
 	cd frontend && npm ci && \
-	VITE_API_BASE_URL="$(API_SERVER_URL_LOCALPROD)" npm run build
+	VITE_API_BASE_URL="$(API_SERVER_URL_LOCALPROD)" \
+	VITE_CLOUDINARY_CLOUD_NAME="$(CLOUDINARY_CLOUD_NAME)" \
+	VITE_CLOUDINARY_UPLOAD_PRESET="$(CLOUDINARY_UPLOAD_PRESET)" \
+	VITE_CLOUDINARY_API_KEY="$(CLOUDINARY_API_KEY)" \
+	npm run build
 
 build_frontend_prod: clean_frontend
 	cd frontend && npm ci && \
-	VITE_API_BASE_URL="$(API_SERVER_URL_PROD)" npm run build
+	VITE_API_BASE_URL="$(API_SERVER_URL_LOCALPROD)" \
+	VITE_CLOUDINARY_CLOUD_NAME="$(CLOUDINARY_CLOUD_NAME)" \
+	VITE_CLOUDINARY_UPLOAD_PRESET="$(CLOUDINARY_UPLOAD_PRESET)" \
+	VITE_CLOUDINARY_API_KEY="$(CLOUDINARY_API_KEY)" \
+	npm run build
 
 # Build environments
 
 dev: #common_jar
 	docker compose --project-name helpdesk_dev \
-	  -f docker-compose.dev.yml up --build
+	  -f docker-compose.dev.yml up --build --user $(id -u):$(id -g)
 
 prod: build_frontend_prod build_jars
 	docker compose --project-name helpdesk_prod \
@@ -77,7 +89,7 @@ local_prod: build_frontend_localprod build_jars
 # Maintenance tasks
 
 clean: clean_frontend
-	cd backend && sudo mvn clean
+	cd backend && mvn clean
 
 down_dev:
 	docker compose --project-name helpdesk_dev \
