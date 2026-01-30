@@ -35,7 +35,7 @@ public class Ticket {
 
   @NotBlank(message = "Status cannot be blank")
   @Builder.Default
-  private String status = "open";
+  private String status = "OPEN";
 
   @CreatedDate
   private Instant createdAt;
