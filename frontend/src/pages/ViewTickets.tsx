@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { ViewTicketsStandard } from "@/components/ViewTicketsStandard";
-import { ViewTicketsServiceDesk } from "@/components/ViewTicketsServiceDesk";
+import { ViewTicketsAgent } from "@/components/ViewTicketsAgent";
 import { RequestButton } from "@/components/RequestButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
@@ -63,7 +63,7 @@ const ViewTickets = () => {
 
       ) : (
 
-        <ViewTicketsServiceDesk
+        <ViewTicketsAgent
           tickets={safeTickets}
           userId={user?.id!}
           isLoading={isLoading}

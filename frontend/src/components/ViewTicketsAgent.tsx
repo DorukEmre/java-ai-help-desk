@@ -12,7 +12,7 @@ interface Props {
   isLoading: boolean;
 }
 
-export const ViewTicketsServiceDesk = ({ tickets, userId, isLoading }: Props) => {
+export const ViewTicketsAgent = ({ tickets, userId, isLoading }: Props) => {
 
   const myTickets = useMemo(
     () => tickets.filter(ticket => ticket.agentId === userId),
