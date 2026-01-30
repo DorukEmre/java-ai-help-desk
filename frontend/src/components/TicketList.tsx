@@ -25,7 +25,7 @@ export const TicketList = ({ tickets, isLoading, noTabs = false }: Props) => {
 
       {!isLoading && tickets.length == 0 && (
         <>
-          <p>No tickets found.</p>
+          <p className="p-2">No tickets found.</p>
         </>
       )}
 
