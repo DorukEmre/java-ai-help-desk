@@ -1,0 +1,16 @@
+
+services:
+  helpdesk-caddy:
+    ports:
+      - "5443:5443"
+      - "8443:8443"
+    volumes:
+      - ./Caddyfile.localprod:/etc/caddy/Caddyfile:ro
+
+  helpdesk-user-service:
+    environment:
+      API_SERVER_URL: ${API_SERVER_URL_LOCALPROD}
+
+  helpdesk-ticket-service:
+    environment:
+      API_SERVER_URL: ${API_SERVER_URL_LOCALPROD}
