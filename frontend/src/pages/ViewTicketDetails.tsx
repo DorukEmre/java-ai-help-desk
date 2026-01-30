@@ -11,12 +11,14 @@ import { cloudinary } from "@/config/cloudinaryConfig";
 import { TicketAssignment } from "@/components/TicketAssignment";
 import { TicketDetailsInfoItem } from "@/components/TicketDetailsInfoItem";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { DateFormatter } from "@/components/DateFormatter";
 
 import { useAuth } from "@/auth/useAuth";
 import { useAuthApi } from "@/hooks/useAuthApi";
 
 import type { User } from "@/types/auth";
 import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } from "@/types/ticket";
+
 
 const ViewTicketDetails = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
@@ -214,12 +216,18 @@ const ViewTicketDetails = () => {
 
             <TicketDetailsInfoItem
               label="Created At:"
-              value={new Date(ticket.createdAt).toLocaleString()}
+              value={<DateFormatter
+                date={ticket.createdAt}
+                noWrapper
+              />}
             />
 
             <TicketDetailsInfoItem
               label="Last Updated:"
-              value={new Date(ticket.updatedAt).toLocaleString()}
+              value={<DateFormatter
+                date={ticket.updatedAt}
+                noWrapper
+              />}
             />
 
             <TicketDetailsInfoItem
@@ -262,7 +270,10 @@ const ViewTicketDetails = () => {
                       </div>
                       <div>
                         <p className="fw-bold">At:</p>{" "}
-                        {new Date(action.timestamp).toLocaleString()}
+                        <DateFormatter
+                          date={action.timestamp}
+                          noWrapper
+                        />
                       </div>
                       <div>
                         <p className="fw-bold">Details:</p> {action.details}
