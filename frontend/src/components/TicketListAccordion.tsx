@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom"
 
-import { Accordion, Badge, ListGroup } from "react-bootstrap"
+import { Accordion, ListGroup } from "react-bootstrap"
+
+import { TicketListItem } from "@/components/TicketListItem";
 
 import type { Ticket } from "@/types/ticket"
 
@@ -30,37 +31,10 @@ export const TicketListAccordion = ({ header, tickets }: Props) => {
               <ListGroup.Item as="li" key={ticket.id}
                 className="ticket-list-item p-0"
               >
-                <Link to={`/tickets/${ticket.id}`}
-                  className="ticket-list-item-link h-100 w-100 d-flex flex-column justify-content-between align-items-start gap-2 py-2 px-3"
-                >
+                <TicketListItem
+                  ticket={ticket}
+                />
 
-                  {/* status + date */}
-                  < div
-                    className="d-flex flex-row justify-content-between align-items-center gap-2 w-100"
-                    style={{ minWidth: "145px" }}
-                  >
-                    <div className="">
-                      <small>{new Date(ticket.createdAt).toLocaleString()}</small>
-                    </div>
-
-                    <Badge
-                      bg="secondary"
-                      className=""
-                    >
-                      {ticket.status.toLocaleLowerCase()}
-                    </Badge>
-                  </div>
-
-                  {/* description */}
-                  <div className="">
-                    <p className="fw-bold text-body">
-                      {ticket.description.split(' ').length > 10
-                        ? `${ticket.description.split(' ').slice(0, 10).join(' ')}...`
-                        : ticket.description}
-                    </p>
-                  </div>
-
-                </Link>
               </ListGroup.Item >
             ))}
           </ListGroup >
