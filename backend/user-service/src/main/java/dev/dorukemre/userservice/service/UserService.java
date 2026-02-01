@@ -24,6 +24,7 @@ import dev.dorukemre.userservice.request.LoginRequest;
 import dev.dorukemre.userservice.request.RegisterRequest;
 import dev.dorukemre.userservice.request.TokenRefreshRequest;
 import dev.dorukemre.userservice.response.AuthResponse;
+import dev.dorukemre.userservice.service.dto.AuthResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +39,7 @@ public class UserService {
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
 
-  public AuthResponse login(LoginRequest request) {
+  public AuthResult login(LoginRequest request) {
     log.info("Logging in user: {}", request);
 
     // Check username/password via UserDetailsService + PasswordEncoder
@@ -58,17 +59,18 @@ public class UserService {
     String refreshToken = jwtService.generateRefreshToken();
     jwtService.createAndPersistRefreshToken(refreshToken, user.getId());
 
-    return AuthResponse.builder()
-        .id(user.getId())
-        .username(user.getUsername())
-        .fullname(user.getFullname())
-        .role(user.getRole())
-        .accessToken(accessToken)
-        .refreshToken(refreshToken)
-        .build();
+    return (new AuthResult(
+        AuthResponse.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .fullname(user.getFullname())
+            .role(user.getRole())
+            .accessToken(accessToken)
+            .build(),
+        refreshToken));
   }
 
-  public AuthResponse register(RegisterRequest request) {
+  public AuthResult register(RegisterRequest request) {
     log.info("Registering user: {}", request);
 
     // Check username available
@@ -108,17 +110,18 @@ public class UserService {
     String refreshToken = jwtService.generateRefreshToken();
     jwtService.createAndPersistRefreshToken(refreshToken, user.getId());
 
-    return AuthResponse.builder()
-        .id(savedUser.getId())
-        .username(savedUser.getUsername())
-        .fullname(savedUser.getFullname())
-        .role(savedUser.getRole())
-        .accessToken(accessToken)
-        .refreshToken(refreshToken)
-        .build();
+    return (new AuthResult(
+        AuthResponse.builder()
+            .id(savedUser.getId())
+            .username(savedUser.getUsername())
+            .fullname(savedUser.getFullname())
+            .role(savedUser.getRole())
+            .accessToken(accessToken)
+            .build(),
+        refreshToken));
   }
 
-  public AuthResponse refresh(TokenRefreshRequest request) {
+  public AuthResult refresh(TokenRefreshRequest request) {
     log.info("Refreshing token: {}", request);
 
     String requestRefreshToken = request.getRefreshToken();
@@ -143,14 +146,15 @@ public class UserService {
     String newRefreshToken = jwtService.generateRefreshToken();
     jwtService.hashAndPersistRefreshToken(newRefreshToken, tokenEntity);
 
-    return AuthResponse.builder()
-        .id(user.getId())
-        .username(user.getUsername())
-        .fullname(user.getFullname())
-        .role(user.getRole())
-        .accessToken(newAccessToken)
-        .refreshToken(newRefreshToken)
-        .build();
+    return (new AuthResult(
+        AuthResponse.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .fullname(user.getFullname())
+            .role(user.getRole())
+            .accessToken(newAccessToken)
+            .build(),
+        newRefreshToken));
   }
 
   public List<User> listUsers(String roleStr) {

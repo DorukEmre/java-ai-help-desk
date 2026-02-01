@@ -19,6 +19,9 @@ import dev.dorukemre.userservice.request.RegisterRequest;
 import dev.dorukemre.userservice.request.TokenRefreshRequest;
 import dev.dorukemre.userservice.response.AuthResponse;
 import dev.dorukemre.userservice.service.UserService;
+import dev.dorukemre.userservice.service.dto.AuthResult;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -42,11 +45,16 @@ public class UserController {
   // @ApiResponse(responseCode = "400", description = "Bad request")
   // })
   @PostMapping("/login")
-  public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+  public ResponseEntity<AuthResponse> login(
+      @Valid @RequestBody LoginRequest request,
+      HttpServletResponse response) {
     System.out.println("POST /api/v1/user/login called");
 
-    AuthResponse response = userService.login(request);
-    return ResponseEntity.status(HttpStatus.OK).body(response);
+    AuthResult result = userService.login(request);
+
+    addRefreshTokenCookie(response, result.getRefreshToken());
+
+    return ResponseEntity.status(HttpStatus.OK).body(result.getAuthResponse());
   }
 
   // @Operation(summary = "User Registration", description = "Registers a new user
@@ -59,20 +67,30 @@ public class UserController {
   // @ApiResponse(responseCode = "400", description = "Invalid input data")
   // })
   @PostMapping("/register")
-  public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+  public ResponseEntity<AuthResponse> register(
+      @Valid @RequestBody RegisterRequest request,
+      HttpServletResponse response) {
     System.out.println("POST /api/v1/user/register called");
 
-    AuthResponse response = userService.register(request);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    AuthResult result = userService.register(request);
+
+    addRefreshTokenCookie(response, result.getRefreshToken());
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(result.getAuthResponse());
   }
 
   // @Operation(summary = "Refresh Token", description = "Generates a new refresh
   // token.")
   @PostMapping("/refresh")
-  public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+  public ResponseEntity<AuthResponse> refreshToken(
+      @Valid @RequestBody TokenRefreshRequest request,
+      HttpServletResponse response) {
 
-    AuthResponse response = userService.refresh(request);
-    return ResponseEntity.status(HttpStatus.OK).body(response);
+    AuthResult result = userService.refresh(request);
+
+    addRefreshTokenCookie(response, result.getRefreshToken());
+
+    return ResponseEntity.status(HttpStatus.OK).body(result.getAuthResponse());
   }
 
   // @Operation(summary = "List all users", description = "Retrieves all
@@ -94,6 +112,23 @@ public class UserController {
 
     return ResponseEntity.ok().build();
 
+  }
+
+  private void addRefreshTokenCookie(
+      HttpServletResponse response,
+      String refreshToken) {
+
+    Cookie cookie = new Cookie("refreshToken", refreshToken);
+    cookie.setHttpOnly(true);
+    cookie.setSecure(true);
+    cookie.setPath("/refresh");
+    cookie.setMaxAge(7 * 24 * 60 * 60);
+    response.addCookie(cookie);
+
+    response.addHeader(
+        "Set-Cookie",
+        "refreshToken=" + refreshToken
+            + "; HttpOnly; Secure; SameSite=Strict; Path=/refresh; Max-Age=604800");
   }
 
 }
