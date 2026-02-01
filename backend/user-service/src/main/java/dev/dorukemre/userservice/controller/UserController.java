@@ -118,17 +118,24 @@ public class UserController {
       HttpServletResponse response,
       String refreshToken) {
 
-    Cookie cookie = new Cookie("refreshToken", refreshToken);
-    cookie.setHttpOnly(true);
-    cookie.setSecure(true);
-    cookie.setPath("/refresh");
-    cookie.setMaxAge(7 * 24 * 60 * 60);
-    response.addCookie(cookie);
+    // Cookie cookie = new Cookie("refreshToken", refreshToken);
+    // cookie.setHttpOnly(true);
+    // cookie.setSecure(true);
+    // cookie.setPath("/refresh");
+    // cookie.setMaxAge(7 * 24 * 60 * 60);
+    // response.addCookie(cookie);
 
+    // dev
     response.addHeader(
         "Set-Cookie",
         "refreshToken=" + refreshToken
-            + "; HttpOnly; Secure; SameSite=Strict; Path=/refresh; Max-Age=604800");
+            + "; HttpOnly; Secure; SameSite=None; Path=/refresh; Max-Age=604800");
+
+    // prod
+    // response.addHeader(
+    // "Set-Cookie",
+    // "refreshToken=" + refreshToken
+    // + "; HttpOnly; Secure; SameSite=Strict; Path=/refresh; Max-Age=604800");
   }
 
 }
