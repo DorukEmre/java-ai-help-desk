@@ -72,7 +72,7 @@ build_frontend_prod: clean_frontend
 
 dev: #common_jar
 	docker compose --project-name helpdesk_dev \
-	  -f docker-compose.dev.yml up --build --user $(id -u):$(id -g)
+	  -f docker-compose.dev.yml up --build
 
 prod: build_frontend_prod build_jars
 	docker compose --project-name helpdesk_prod \
