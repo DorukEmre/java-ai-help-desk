@@ -22,11 +22,13 @@ public class SecurityConfig {
 
   private final ReactiveJwtAuthenticationConverter jwtAuthenticationConverter;
   private final CorsConfiguration corsConfiguration;
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   public SecurityConfig(ReactiveJwtAuthenticationConverter jwtAuthenticationConverter,
-      CorsConfiguration corsConfiguration) {
+      CorsConfiguration corsConfiguration, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
     this.jwtAuthenticationConverter = jwtAuthenticationConverter;
     this.corsConfiguration = corsConfiguration;
+    this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
   }
 
   @Bean
@@ -38,7 +40,9 @@ public class SecurityConfig {
         .authorizeExchange(exchanges -> exchanges
             // public endpoints
             .pathMatchers(HttpMethod.GET, "/").permitAll()
-            .pathMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+            .pathMatchers(HttpMethod.POST,
+                "/login", "/register", "/refresh")
+            .permitAll()
 
             // standard user endpoints
             .pathMatchers(HttpMethod.GET, "/users/{userId}/tickets")
@@ -66,12 +70,13 @@ public class SecurityConfig {
             // admin endpoints
 
             // everything else requires any authentication
-            // POST /refresh
             .anyExchange().authenticated())
         // JWT validation
         .oauth2ResourceServer(oauth2 -> oauth2
             .jwt(jwt -> jwt
-                .jwtAuthenticationConverter(jwtAuthenticationConverter)))
+                .jwtAuthenticationConverter(jwtAuthenticationConverter))
+            .authenticationEntryPoint(customAuthenticationEntryPoint))
+
         .build();
   }
 
