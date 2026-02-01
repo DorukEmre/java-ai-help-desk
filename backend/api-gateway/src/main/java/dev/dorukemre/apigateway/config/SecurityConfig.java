@@ -66,6 +66,7 @@ public class SecurityConfig {
             // admin endpoints
 
             // everything else requires any authentication
+            // POST /refresh
             .anyExchange().authenticated())
         // JWT validation
         .oauth2ResourceServer(oauth2 -> oauth2

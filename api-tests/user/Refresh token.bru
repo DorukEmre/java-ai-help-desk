@@ -1,0 +1,26 @@
+meta {
+  name: Refresh token
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{BASE_URL}}/refresh
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ2VudCIsInJvbGUiOiJBR0VOVCIsImV4cCI6MTc2OTk2ODUxOSwidXNlcklkIjoiNjk3Y2MyZjcwZTIxNGQ2OTU5NjMxNGE1IiwiaWF0IjoxNzY5OTY3NjE5fQ.G_3lJNSFdVoUxTMLNMN-UeFE-JFIrPpT2S_Fz-ltfYo
+}
+
+body:json {
+  {
+    "refreshToken": "207577d6-f00a-4b12-9de2-b5744af393747ef8d94c-a8bc-4252-aee6-b5ef6f65d74c"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
