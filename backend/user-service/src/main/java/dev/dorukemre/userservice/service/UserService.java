@@ -1,5 +1,6 @@
 package dev.dorukemre.userservice.service;
 
+import java.time.Instant;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -9,14 +10,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import dev.dorukemre.userservice.entity.RefreshToken;
 import dev.dorukemre.userservice.entity.Role;
 import dev.dorukemre.userservice.entity.User;
 import dev.dorukemre.userservice.exception.InvalidAgentRoleException;
+import dev.dorukemre.userservice.exception.InvalidRefreshTokenException;
+import dev.dorukemre.userservice.exception.RefreshTokenExpiredException;
 import dev.dorukemre.userservice.exception.UserNotFoundException;
 import dev.dorukemre.userservice.exception.UsernameAlreadyExistsException;
+import dev.dorukemre.userservice.repository.RefreshTokenRepository;
 import dev.dorukemre.userservice.repository.UserRepository;
 import dev.dorukemre.userservice.request.LoginRequest;
 import dev.dorukemre.userservice.request.RegisterRequest;
+import dev.dorukemre.userservice.request.TokenRefreshRequest;
 import dev.dorukemre.userservice.response.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
@@ -44,8 +51,12 @@ public class UserService {
         .findByUsername(request.getUsername())
         .orElseThrow(() -> new BadCredentialsException("User not found with username: " + request.getUsername()));
 
-    // Generate JWT
-    String accessToken = jwtService.generateToken(user);
+    // Generate access token
+    String accessToken = jwtService.generateAccessToken(user);
+
+    // Generate refresh token, create RefreshToken entity, hash token, save to DB
+    String refreshToken = jwtService.generateRefreshToken();
+    jwtService.createAndPersistRefreshToken(refreshToken, user.getId());
 
     return AuthResponse.builder()
         .id(user.getId())
@@ -53,6 +64,7 @@ public class UserService {
         .fullname(user.getFullname())
         .role(user.getRole())
         .accessToken(accessToken)
+        .refreshToken(refreshToken)
         .build();
   }
 
@@ -74,7 +86,7 @@ public class UserService {
     // Hash password
     String hashedPassword = passwordEncoder.encode(request.getPassword());
 
-    // Save user to DB
+    // Save User to DB
     User user = User.builder()
         .username(request.getUsername())
         .fullname(request.getFullname())
@@ -89,8 +101,12 @@ public class UserService {
             savedUser.getUsername(),
             request.getPassword()));
 
-    // Generate JWT
-    String accessToken = jwtService.generateToken(savedUser);
+    // Generate access token
+    String accessToken = jwtService.generateAccessToken(savedUser);
+
+    // Generate refresh token, create RefreshToken entity, hash token, save to DB
+    String refreshToken = jwtService.generateRefreshToken();
+    jwtService.createAndPersistRefreshToken(refreshToken, user.getId());
 
     return AuthResponse.builder()
         .id(savedUser.getId())
@@ -98,6 +114,42 @@ public class UserService {
         .fullname(savedUser.getFullname())
         .role(savedUser.getRole())
         .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .build();
+  }
+
+  public AuthResponse refresh(TokenRefreshRequest request) {
+    log.info("Refreshing token: {}", request);
+
+    String requestRefreshToken = request.getRefreshToken();
+
+    String hashedToken = jwtService.hashToken(requestRefreshToken);
+
+    RefreshToken tokenEntity = refreshTokenRepository
+        .findByTokenHashAndRevokedFalse(hashedToken)
+        .orElseThrow(() -> new InvalidRefreshTokenException());
+
+    if (tokenEntity.getExpiresAt().isBefore(Instant.now())) {
+      refreshTokenRepository.delete(tokenEntity);
+      throw new RefreshTokenExpiredException();
+    }
+
+    User user = userRepository.findById(tokenEntity.getUserId())
+        .orElseThrow(() -> new UserNotFoundException());
+
+    String newAccessToken = jwtService.generateAccessToken(user);
+
+    // Generate new refresh token, hash and save existing entity to DB
+    String newRefreshToken = jwtService.generateRefreshToken();
+    jwtService.hashAndPersistRefreshToken(newRefreshToken, tokenEntity);
+
+    return AuthResponse.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .fullname(user.getFullname())
+        .role(user.getRole())
+        .accessToken(newAccessToken)
+        .refreshToken(newRefreshToken)
         .build();
   }
 

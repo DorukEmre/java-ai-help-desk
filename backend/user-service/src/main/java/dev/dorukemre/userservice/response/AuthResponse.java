@@ -27,5 +27,8 @@ public class AuthResponse {
   private Role role;
 
   @NotBlank(message = "Access token cannot be blank")
-  private String accessToken; // JWT token
+  private String accessToken;
+
+  @NotBlank(message = "Refresh token cannot be blank")
+  private String refreshToken;
 }

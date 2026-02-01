@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.dorukemre.userservice.entity.User;
 import dev.dorukemre.userservice.request.LoginRequest;
 import dev.dorukemre.userservice.request.RegisterRequest;
+import dev.dorukemre.userservice.request.TokenRefreshRequest;
 import dev.dorukemre.userservice.response.AuthResponse;
 import dev.dorukemre.userservice.service.UserService;
 import jakarta.validation.Valid;
@@ -63,6 +64,15 @@ public class UserController {
 
     AuthResponse response = userService.register(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  // @Operation(summary = "Refresh Token", description = "Generates a new refresh
+  // token.")
+  @PostMapping("/refresh")
+  public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+
+    AuthResponse response = userService.refresh(request);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   // @Operation(summary = "List all users", description = "Retrieves all
