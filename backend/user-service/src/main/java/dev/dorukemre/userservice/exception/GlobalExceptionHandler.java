@@ -61,7 +61,9 @@ public class GlobalExceptionHandler {
   // Handle refresh token invalid
   @ExceptionHandler(InvalidRefreshTokenException.class)
   public ResponseEntity<Map<String, String>> handleInvalidRefreshToken(InvalidRefreshTokenException ex) {
-    Map<String, String> errorResponse = Map.of("message", ex.getMessage());
+    Map<String, String> errorResponse = Map.of(
+        "message", ex.getMessage(),
+        "code", "INVALID_REFRESH_TOKEN");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
   }
 
@@ -70,8 +72,8 @@ public class GlobalExceptionHandler {
   public ResponseEntity<Map<String, String>> handleRefreshTokenExpired(RefreshTokenExpiredException ex) {
     Map<String, String> errorResponse = Map.of(
         "message", ex.getMessage(),
-        "errorType", "REFRESH_TOKEN_EXPIRED");
-    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        "code", "REFRESH_TOKEN_EXPIRED");
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
   }
 
   // Generic exception handler for other exceptions
