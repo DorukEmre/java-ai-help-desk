@@ -22,12 +22,16 @@ export const validateImage = (imageFile: File | undefined)
 export const uploadToCloudinary = async (file: File, authApi: AxiosInstance)
   : Promise<string> => {
 
-  // get signature
-  const paramsToSign: Record<string, any> = {
+  // params to get signature
+  const paramsToSign: {
+    timestamp: number;
+    upload_preset: string;
+  } = {
     timestamp: Math.floor(Date.now() / 1000),
     upload_preset: cloudinaryConfig.uploadPreset
   };
 
+  // get signature
   const signatureResponse = await authApi.post(
     '/cloudinary/signature',
     { paramsToSign }
