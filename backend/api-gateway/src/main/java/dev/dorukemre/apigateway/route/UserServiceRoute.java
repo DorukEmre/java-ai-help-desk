@@ -34,13 +34,13 @@ public class UserServiceRoute {
             .filters(f -> f.prefixPath("/api/v1/user"))
             .uri(uri))
 
-        // protected routes
-
         .route("refresh-token", r -> r
             .path("/refresh")
             .and().method(HttpMethod.POST)
             .filters(f -> f.prefixPath("/api/v1/user"))
             .uri(uri))
+
+        // protected routes
 
         .route("list-users", r -> r
             .path("/users")
