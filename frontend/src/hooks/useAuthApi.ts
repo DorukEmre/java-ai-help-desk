@@ -6,19 +6,21 @@ import { getBaseUrl } from "@/utils/globals";
 
 
 export const useAuthApi = () => {
-  const { token } = useAuth();
+  const { accessToken } = useAuth();
 
   const authApi = useMemo(() => {
 
     const instance = axios.create({
-      baseURL: getBaseUrl()
+      baseURL: getBaseUrl(),
+      withCredentials: true,
     });
 
+    // Request interceptor
     instance.interceptors.request.use((config) => {
 
-      // Add Authorization if token exists
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      // Add Authorization if accessToken exists
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
 
       // Add Content-Type only if there is a body (data)
@@ -31,7 +33,7 @@ export const useAuthApi = () => {
 
     return instance;
 
-  }, [token]);
+  }, [accessToken]);
 
   return authApi;
 };

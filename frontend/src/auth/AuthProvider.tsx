@@ -3,57 +3,58 @@ import { useState, type ReactNode } from "react";
 import { AuthContext, type AuthContextValue } from "@/auth/AuthContext";
 import type { User, LoginResponse } from "@/types/auth";
 
-const readAuthFromStorage = (): { token: string | null; user: User | null } => {
-  const token = localStorage.getItem("token");
+const readAuthFromStorage = (): { accessToken: string | null; user: User | null } => {
+  const accessToken = localStorage.getItem("accessToken");
   const userRaw = localStorage.getItem("user");
 
   // If one missing, clean up
-  if (!token || !userRaw) {
-    localStorage.removeItem("token");
+  if (!accessToken || !userRaw) {
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
 
-    return { token: null, user: null };
+    return { accessToken: null, user: null };
   }
 
   try {
     const user = JSON.parse(userRaw) as User;
-    return { token, user };
+    return { accessToken, user };
   } catch {
     // If JSON parse fail, clean up
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
 
-    return { token: null, user: null };
+    return { accessToken: null, user: null };
   }
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
-  const [{ token, user }, setAuth] = useState(readAuthFromStorage);
+  const [{ accessToken, user }, setAuth] = useState(readAuthFromStorage);
 
   // On user log in
   const setAuthSession = ({ accessToken, ...userData }: LoginResponse) => {
 
-    setAuth({ token: accessToken, user: userData });
+    setAuth({ accessToken: accessToken, user: userData });
 
-    localStorage.setItem("token", accessToken);
+    localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
   // On user log out 
   const clearAuthSession = () => {
 
-    setAuth({ token: null, user: null });
+    setAuth({ accessToken: null, user: null });
 
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
+
   };
 
-  const isUserLoggedIn = Boolean(user && token);
+  const isUserLoggedIn = Boolean(user && accessToken);
 
   const value: AuthContextValue = {
     user,
-    token,
+    accessToken,
     setAuthSession,
     clearAuthSession,
     isUserLoggedIn,
