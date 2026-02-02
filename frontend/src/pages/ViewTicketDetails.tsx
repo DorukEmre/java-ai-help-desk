@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import type { AxiosInstance } from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 import { ListGroup, Spinner } from "react-bootstrap";
 
@@ -25,11 +27,28 @@ const ViewTicketDetails = () => {
   const location = useLocation();
   const passedTicket = location.state?.ticket as Ticket | undefined;
 
-  const [error, setError] = useState<unknown>(null);
   const [ticket, setTicket] = useState<Ticket | null>(passedTicket ?? null);
-  const [agents, setAgents] = useState<User[]>([]);
+  const [error, setError] = useState<unknown>(null);
+
+  const { user } = useAuth();
+  const authApi = useAuthApi();
+
+  const fetchAgents = async (authApi: AxiosInstance): Promise<User[]> => {
+    const response = await authApi.get('/users?role=AGENT');
+    return response.data;
+  };
+
+  const {
+    data: agents = [],
+    isLoading: isLoadingAgentsList,
+    error: errorLoadingAgentsList,
+  } = useQuery({
+    queryKey: ['agents'],
+    queryFn: () => fetchAgents(authApi),
+    enabled: user?.role === 'AGENT' || user?.role === 'ADMIN',
+  });
+
   const [isLoading, setIsLoading] = useState<TicketLoadingState>({
-    isLoadingAgentsList: false,
     isLoadingTicket: false,
     isUpdatingStatus: false,
     isUpdatingAgent: false,
@@ -37,37 +56,11 @@ const ViewTicketDetails = () => {
     isUpdatingActions: false
   });
 
-  const { user } = useAuth();
-  const authApi = useAuthApi();
-
-
   useEffect(() => {
-
-    const getAgentsList = async () => {
-      setIsLoading(prevState => ({ ...prevState, isLoadingAgentsList: true, }));
-
-      try {
-
-        const url = `/users?role=AGENT`;
-
-        const response = await authApi.get(url);
-        console.debug("getAgentsList:", response.data);
-
-        setAgents(response.data);
-
-      } catch (error) {
-        setError(error);
-        console.error("Unexpected error:", error);
-
-      } finally {
-        setIsLoading(prevState => ({ ...prevState, isLoadingAgentsList: false, }));
-      }
+    if (errorLoadingAgentsList) {
+      setError(errorLoadingAgentsList);
     }
-
-    if (user?.role == "AGENT" || user?.role == "ADMIN")
-      getAgentsList();
-
-  }, [authApi, user?.role]);
+  }, [errorLoadingAgentsList]);
 
   useEffect(() => {
 
@@ -153,7 +146,7 @@ const ViewTicketDetails = () => {
       <ErrorMessage error={error} />
 
       {ticket
-        && !(isLoading.isLoadingTicket || isLoading.isLoadingAgentsList)
+        && !(isLoading.isLoadingTicket || isLoadingAgentsList)
         ? (
           <ListGroup as="ul" className="mx-auto">
 
@@ -170,7 +163,10 @@ const ViewTicketDetails = () => {
                 agents={agents}
                 currentAgentId={ticket.agentId || ""}
                 handleUpdateAgentId={handleUpdateAgentId}
-                isLoading={isLoading}
+                isLoading={{
+                  ...isLoading,
+                  isLoadingAgentsList,
+                }}
               />
             ) : (
               <>

@@ -47,7 +47,7 @@ export interface UpdateTicketRequest {
 }
 
 export type TicketLoadingState = {
-  isLoadingAgentsList: boolean;
+  isLoadingAgentsList?: boolean;
   isLoadingTicket: boolean;
   isUpdatingStatus: boolean;
   isUpdatingAgent: boolean;
