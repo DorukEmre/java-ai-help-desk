@@ -42,6 +42,12 @@ public class UserServiceRoute {
 
         // protected routes
 
+        .route("logout", r -> r
+            .path("/logout")
+            .and().method(HttpMethod.POST)
+            .filters(f -> f.prefixPath("/api/v1/user"))
+            .uri(uri))
+
         .route("list-users", r -> r
             .path("/users")
             .and().method(HttpMethod.GET)

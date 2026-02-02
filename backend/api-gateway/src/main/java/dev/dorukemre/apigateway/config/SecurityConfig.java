@@ -57,11 +57,9 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(request -> corsConfiguration))
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
         .authorizeExchange(exchanges -> exchanges
-            // public endpoints
-            .pathMatchers(HttpMethod.GET, "/").permitAll()
-            .pathMatchers(HttpMethod.POST,
-                "/login", "/register", "/refresh")
-            .permitAll()
+
+            .pathMatchers(HttpMethod.POST, "/logout")
+            .hasAnyRole("STANDARD_USER", "AGENT", "ADMIN")
 
             // standard user endpoints
             .pathMatchers(HttpMethod.GET, "/users/{userId}/tickets")
@@ -90,11 +88,14 @@ public class SecurityConfig {
 
             // everything else requires any authentication
             .anyExchange().authenticated())
+
         // JWT validation
         .oauth2ResourceServer(oauth2 -> oauth2
             .jwt(jwt -> jwt
                 .jwtAuthenticationConverter(jwtAuthenticationConverter))
             .authenticationEntryPoint(customAuthenticationEntryPoint))
+
+        .logout(logout -> logout.disable())
 
         .build();
   }

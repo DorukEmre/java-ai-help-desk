@@ -20,7 +20,6 @@ import dev.dorukemre.userservice.request.RegisterRequest;
 import dev.dorukemre.userservice.response.AuthResponse;
 import dev.dorukemre.userservice.service.UserService;
 import dev.dorukemre.userservice.service.dto.AuthResult;
-// import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -94,6 +93,17 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.OK).body(result.getAuthResponse());
   }
 
+  // @Operation(summary = "Logout", description = "Logs out user.")
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(
+      HttpServletResponse response) {
+    System.out.println("POST /api/v1/user/logout called");
+
+    removeRefreshTokenCookie(response);
+
+    return ResponseEntity.ok().build();
+  }
+
   // @Operation(summary = "List all users", description = "Retrieves all
   // users.")
   @GetMapping("/users")
@@ -112,19 +122,11 @@ public class UserController {
     userService.checkAgent(agentId);
 
     return ResponseEntity.ok().build();
-
   }
 
   private void addRefreshTokenCookie(
       HttpServletResponse response,
       String refreshToken) {
-
-    // Cookie cookie = new Cookie("refreshToken", refreshToken);
-    // cookie.setHttpOnly(true);
-    // cookie.setSecure(true);
-    // cookie.setPath("/refresh");
-    // cookie.setMaxAge(7 * 24 * 60 * 60);
-    // response.addCookie(cookie);
 
     // dev
     response.addHeader(
@@ -137,6 +139,13 @@ public class UserController {
     // "Set-Cookie",
     // "refreshToken=" + refreshToken
     // + "; HttpOnly; Secure; SameSite=Strict; Path=/refresh; Max-Age=604800");
+  }
+
+  private void removeRefreshTokenCookie(HttpServletResponse response) {
+
+    response.addHeader(
+        "Set-Cookie",
+        "refreshToken=; HttpOnly; Secure; SameSite=None; Path=/refresh; Max-Age=0");
   }
 
 }
