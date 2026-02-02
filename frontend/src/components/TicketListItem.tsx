@@ -8,15 +8,16 @@ import type { Ticket, TicketCreationResponse } from "@/types/ticket";
 
 type Props = {
   ticket: Ticket | TicketCreationResponse;
+  passInitialTicket?: boolean;
 }
 
-export const TicketListItem = ({ ticket }: Props) => {
+export const TicketListItem = ({ ticket, passInitialTicket = true }: Props) => {
 
   return (
 
     <Link
       to={`/tickets/${ticket.id}`}
-      className="ticket-list-item-link h-100 w-100 d-flex flex-column justify-content-between align-items-start gap-2 py-2 px-3"
+      state={passInitialTicket ? { ticket } : undefined} className="ticket-list-item-link h-100 w-100 d-flex flex-column justify-content-between align-items-start gap-2 py-2 px-3"
     >
 
       {/* date + status */}

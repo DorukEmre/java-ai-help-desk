@@ -29,6 +29,7 @@ export const TicketCreateSuccess = ({ ticket, resetTicket }: Props) => {
 
         <TicketListItem
           ticket={ticket}
+          passInitialTicket={false}
         />
 
       </div>
