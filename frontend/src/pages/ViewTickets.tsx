@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import type { AxiosInstance } from "axios";
 
 import { ViewTicketsStandard } from "@/components/ViewTicketsStandard";
 import { ViewTicketsAgent } from "@/components/ViewTicketsAgent";
@@ -16,21 +17,24 @@ const ViewTickets = () => {
   const { user } = useAuth();
   const authApi = useAuthApi();
 
+
+  const fetchTickets = async (authApi: AxiosInstance): Promise<Ticket[]> => {
+
+    const url =
+      user?.role === "STANDARD_USER"
+        ? `/users/${user.id}/tickets`
+        : `/tickets`;
+
+    const response = await authApi.get<Ticket[]>(url);
+    return response.data;
+  };
+
   const {
     data: tickets,
     error, isLoading, refetch, isFetching,
   } = useQuery<Ticket[], Error>({
     queryKey: ["tickets", user?.id, user?.role],
-    queryFn: async () => {
-
-      const url =
-        user?.role === "STANDARD_USER"
-          ? `/users/${user.id}/tickets`
-          : `/tickets`;
-
-      const response = await authApi.get<Ticket[]>(url);
-      return response.data;
-    },
+    queryFn: async () => fetchTickets(authApi),
     enabled: Boolean(user?.id),
   });
 
@@ -54,22 +58,23 @@ const ViewTickets = () => {
         </RequestButton>
       </div>
 
-      {(user?.role == "STANDARD_USER") ? (
+      {user &&
+        ((user.role == "STANDARD_USER") ? (
 
-        <ViewTicketsStandard
-          tickets={safeTickets}
-          isLoading={isLoading}
-        />
+          <ViewTicketsStandard
+            tickets={safeTickets}
+            isLoading={isLoading}
+          />
 
-      ) : (
+        ) : (
 
-        <ViewTicketsAgent
-          tickets={safeTickets}
-          userId={user?.id!}
-          isLoading={isLoading}
-        />
+          <ViewTicketsAgent
+            tickets={safeTickets}
+            userId={user.id}
+            isLoading={isLoading}
+          />
 
-      )}
+        ))}
     </>
   );
 }
