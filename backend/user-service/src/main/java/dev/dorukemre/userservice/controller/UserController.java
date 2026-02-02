@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.dorukemre.userservice.entity.User;
 import dev.dorukemre.userservice.request.LoginRequest;
 import dev.dorukemre.userservice.request.RegisterRequest;
-import dev.dorukemre.userservice.request.TokenRefreshRequest;
 import dev.dorukemre.userservice.response.AuthResponse;
 import dev.dorukemre.userservice.service.UserService;
 import dev.dorukemre.userservice.service.dto.AuthResult;
-import jakarta.servlet.http.Cookie;
+// import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -83,10 +83,11 @@ public class UserController {
   // token.")
   @PostMapping("/refresh")
   public ResponseEntity<AuthResponse> refreshToken(
-      @Valid @RequestBody TokenRefreshRequest request,
+      @CookieValue("refreshToken") String refreshToken,
       HttpServletResponse response) {
+    System.out.println("POST /api/v1/user/refreshToken called");
 
-    AuthResult result = userService.refresh(request);
+    AuthResult result = userService.refresh(refreshToken);
 
     addRefreshTokenCookie(response, result.getRefreshToken());
 

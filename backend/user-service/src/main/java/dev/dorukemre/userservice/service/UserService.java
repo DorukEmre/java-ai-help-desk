@@ -22,7 +22,6 @@ import dev.dorukemre.userservice.repository.RefreshTokenRepository;
 import dev.dorukemre.userservice.repository.UserRepository;
 import dev.dorukemre.userservice.request.LoginRequest;
 import dev.dorukemre.userservice.request.RegisterRequest;
-import dev.dorukemre.userservice.request.TokenRefreshRequest;
 import dev.dorukemre.userservice.response.AuthResponse;
 import dev.dorukemre.userservice.service.dto.AuthResult;
 import lombok.RequiredArgsConstructor;
@@ -121,12 +120,10 @@ public class UserService {
         refreshToken));
   }
 
-  public AuthResult refresh(TokenRefreshRequest request) {
-    log.info("Refreshing token: {}", request);
+  public AuthResult refresh(String refreshToken) {
+    log.info("Refreshing token...");
 
-    String requestRefreshToken = request.getRefreshToken();
-
-    String hashedToken = jwtService.hashToken(requestRefreshToken);
+    String hashedToken = jwtService.hashToken(refreshToken);
 
     RefreshToken tokenEntity = refreshTokenRepository
         .findByTokenHashAndRevokedFalse(hashedToken)
