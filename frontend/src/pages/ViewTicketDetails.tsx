@@ -1,6 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { ListGroup, Spinner } from "react-bootstrap";
 
@@ -23,8 +22,11 @@ import type { Ticket, TicketLoadingState, TicketField, UpdateTicketRequest } fro
 const ViewTicketDetails = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
 
-  const [error, setError] = useState<string | null>(null);
-  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const location = useLocation();
+  const passedTicket = location.state?.ticket as Ticket | undefined;
+
+  const [error, setError] = useState<unknown>(null);
+  const [ticket, setTicket] = useState<Ticket | null>(passedTicket ?? null);
   const [agents, setAgents] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<TicketLoadingState>({
     isLoadingAgentsList: false,
@@ -49,24 +51,14 @@ const ViewTicketDetails = () => {
         const url = `/users?role=AGENT`;
 
         const response = await authApi.get(url);
-        console.log("getAgentsList:", response.data);
+        console.debug("getAgentsList:", response.data);
 
         setAgents(response.data);
 
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          console.error("Unexpected error:", error);
-          if (error.response.data.message)
-            setError(error.response.data.message);
-          else if (error.response.status)
-            setError("Unexpected error: " + error.response.status.toString());
-          else
-            setError('An unexpected error occurred.');
+        setError(error);
+        console.error("Unexpected error:", error);
 
-        } else {
-          setError('An unexpected error occurred.');
-          console.error("Unexpected error:", error);
-        }
       } finally {
         setIsLoading(prevState => ({ ...prevState, isLoadingAgentsList: false, }));
       }
@@ -87,24 +79,14 @@ const ViewTicketDetails = () => {
         const url = `/tickets/${ticketId}`;
 
         const response = await authApi.get(url);
-        console.log("getTicket:", response.data);
+        console.debug("getTicket:", response.data);
 
         setTicket(response.data);
 
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          console.error("Unexpected error:", error);
-          if (error.response.data.message)
-            setError(error.response.data.message);
-          else if (error.response.status)
-            setError("Unexpected error: " + error.response.status.toString());
-          else
-            setError('An unexpected error occurred.');
+        setError(error);
+        console.error("Unexpected error:", error);
 
-        } else {
-          setError('An unexpected error occurred.');
-          console.error("Unexpected error:", error);
-        }
       } finally {
         setIsLoading(prevState => ({ ...prevState, isLoadingTicket: false, }));
       }
@@ -121,7 +103,7 @@ const ViewTicketDetails = () => {
   };
 
   const updateTicket = async (field: TicketField, body: UpdateTicketRequest) => {
-    console.log("Updating ticket:", { field, body });
+    console.debug("Updating ticket:", { field, body });
 
     setError(null);
 
@@ -138,24 +120,13 @@ const ViewTicketDetails = () => {
       const url = `/tickets/${ticketId}?update=${field}`;
 
       const response = await authApi.patch(url, body);
-      console.log("Updated ticket:", response.data);
+      console.debug("Updated ticket:", response.data);
 
       setTicket(response.data);
 
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.error("Unexpected error:", error);
-        if (error.response.data.message)
-          setError(error.response.data.message);
-        else if (error.response.status)
-          setError("Unexpected error: " + error.response.status.toString() + " " + error.code || "");
-        else
-          setError('An unexpected error occurred.');
-
-      } else {
-        setError('An unexpected error occurred.');
-        console.error("Unexpected error:", error);
-      }
+      setError(error);
+      console.error("Unexpected error:", error);
 
     } finally {
       if (loadingKey) {
