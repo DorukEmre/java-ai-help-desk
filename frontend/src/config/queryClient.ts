@@ -7,8 +7,8 @@ const queryClient = new QueryClient({
 
       retry: 2,
 
-      refetchOnWindowFocus: true, // when the window regains focus
-      refetchOnMount: false, // when component mounts
+      refetchOnWindowFocus: "always", // when the window regains focus
+      refetchOnMount: "always", // when component mounts
       refetchOnReconnect: true, // when the browser reconnects to the internet
     },
     mutations: {
