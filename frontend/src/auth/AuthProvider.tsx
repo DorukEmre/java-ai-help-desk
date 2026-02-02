@@ -56,21 +56,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const setAuthSession = ({ accessToken, ...userData }: LoginResponse) => {
 
     setAuth({ accessToken: accessToken, user: userData });
-
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   // On user log out 
-  const clearAuthSession = () => {
+  const clearAuthSession = async () => {
+
+    // Backend call to remove refreshToken cookie
+    try {
+
+      const url = getBaseUrl() + "/logout";
+      // const response = 
+      await axios.post(url, {},
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${accessToken}` }
+        }
+      );
+
+      // console.debug("Logout success response: ", response)
+
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
 
     setAuth({ accessToken: null, user: null });
 
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-
     navigate("/login");
-
   };
 
   const isUserLoggedIn = Boolean(user && accessToken);
