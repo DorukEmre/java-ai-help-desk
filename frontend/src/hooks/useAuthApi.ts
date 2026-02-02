@@ -6,7 +6,7 @@ import { getBaseUrl } from "@/utils/globals";
 
 
 export const useAuthApi = () => {
-  const { accessToken, user, setAuthSession } = useAuth();
+  const { accessToken, user, setAuthSession, clearAuthSession } = useAuth();
 
   const authApi = useMemo(() => {
 
@@ -38,7 +38,10 @@ export const useAuthApi = () => {
       async (error) => {
         const prevRequest = error?.config;
 
+        // If refresh request has failed, clear session data
         if (prevRequest?.url === "/refresh") {
+          console.debug("failed refresh: ", error.response)
+          clearAuthSession();
           return Promise.reject(error);
         }
 
@@ -52,23 +55,40 @@ export const useAuthApi = () => {
 
           prevRequest.sent = true
 
-          // Call refresh endpoint
-          const refreshResponse = await instance.post("/refresh");
+          try {
+            // Call refresh endpoint
+            const refreshResponse = await instance.post("/refresh");
 
-          // Update access token in memory with new token
-          const { accessToken: newAccessToken } = refreshResponse.data;
-          setAuthSession({ accessToken: newAccessToken, ...user });
+            // Update access token in memory with new token
+            const { accessToken: newAccessToken } = refreshResponse.data;
+            setAuthSession({ accessToken: newAccessToken, ...user });
 
-          // Retry original request with new config
-          const newConfig = {
-            ...prevRequest,
-            headers: {
-              ...prevRequest.headers,
-              Authorization: `Bearer ${newAccessToken}`
-            }
-          };
-          delete newConfig.sent;
-          return axios.request(newConfig);
+            // Retry original request with new config
+            const newConfig = {
+              ...prevRequest,
+              headers: {
+                ...prevRequest.headers,
+                Authorization: `Bearer ${newAccessToken}`
+              }
+            };
+            delete newConfig.sent;
+            return axios.request(newConfig);
+
+          } catch (error) {
+            console.debug(error);
+            clearAuthSession();
+            return Promise.reject(error);
+          }
+        }
+
+        // Any other auth-related failure (invalid tokens...)
+        if (error.response?.status === 401
+          && (error.response?.data?.code === "INVALID_ACCESS_TOKEN"
+            || error.response?.data?.code === "REFRESH_TOKEN_EXPIRED"
+            || error.response?.data?.code === "INVALID_REFRESH_TOKEN"
+          )) {
+          console.debug(error.response)
+          clearAuthSession();
         }
 
         return Promise.reject(error);
@@ -76,7 +96,7 @@ export const useAuthApi = () => {
     );
 
     return instance;
-  }, [accessToken, user, setAuthSession]);
+  }, [accessToken, user, setAuthSession, clearAuthSession]);
 
   return authApi;
 };

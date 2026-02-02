@@ -1,7 +1,9 @@
 import { useState, type ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { AuthContext, type AuthContextValue } from "@/auth/AuthContext";
 import type { User, LoginResponse } from "@/types/auth";
+
 
 const readAuthFromStorage = (): { accessToken: string | null; user: User | null } => {
   const accessToken = localStorage.getItem("accessToken");
@@ -29,6 +31,8 @@ const readAuthFromStorage = (): { accessToken: string | null; user: User | null 
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
+  const navigate = useNavigate();
+
   const [{ accessToken, user }, setAuth] = useState(readAuthFromStorage);
 
   // On user log in
@@ -47,6 +51,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
+
+    navigate("/login");
 
   };
 

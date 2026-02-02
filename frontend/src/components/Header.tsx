@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 
@@ -6,13 +6,11 @@ import { useAuth } from "@/auth/useAuth";
 
 
 const Header = () => {
-  const navigate = useNavigate();
 
   const { clearAuthSession, isUserLoggedIn, user } = useAuth();
 
   const handleLogout = () => {
     clearAuthSession();
-    navigate("/");
   };
 
   return (
