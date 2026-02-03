@@ -1,27 +1,49 @@
-# java-help-desk
+A full-stack help desk application for managing support tickets, featuring a **React**, **TypeScript**, **Bootstrap** frontend and a microservices-based backend with **Java Spring Boot**, all deployed in **Docker** containers.  
 
-## Microservices Structure
+The platform incorporates **AI-driven automation** through external integrations to streamline ticket classification and handling.
 
-1. API Gateway
-    - Responsibilities:
-        - Routes requests to the appropriate service (user-service or ticket-service).
-        - Handles cross-cutting concerns (authentication, logging).
+A **Caddy web server** serves a static React application and reverse proxies API requests to an API Gateway.
 
-2. User Service
-    - Responsibilities:
-        - Manages user registration, authentication, and role management.
-        - Interacts with MongoDB to store user data (profiles, roles, JWT tokens).
-    - Cloudinary Access: None
+**Cloud deployment** to **AWS EC2**.
 
-3. Ticket Service
-    - Responsibilities:
-        - Manages ticket creation, updates, and status tracking.
-        - Interacts with MongoDB for storing ticket details and histories.
-        - Handles media uploads directly with Cloudinary and receive URLs back. Stores these URLs in MongoDB.
-    - Cloudinary Access: Direct access to handle media uploads.
+**CI/CD** pipeline via **GitHub Actions** for automatic deployment.
 
 
-## Backend Directory Structure
+
+## Application Architecture
+
+![Architecture diagram](architecture_diagram.jpg)  
+
+### Key components:
+
+- **Frontend**: Built with **React** + **TypeScript** and **Bootstrap**
+- **Backend**: Microservices powered by **Spring Boot** and **Java** in **Docker** containers
+- **Database**: **MongoDB**, connected to cloud-based MongoDB Atlas service
+- **Authentication**: JWT (JSON Web Tokens) with Spring Security
+- **Image Handling**: Hosted on **Cloudinary** and automated image processing with AI via **Pollinations.ai**
+
+
+### Microservices
+
+**API Gateway**  
+
+- Routes requests to the appropriate service.
+- Implements JWT-based authentication for role-specific functionalities.
+
+**User Service**  
+
+- Manages user registration, authentication, and JWT generation.
+- Stores user details and refresh tokens in MongoDB.
+
+**Ticket Service**  
+
+- Manages ticket creation, updates, and status tracking.
+- Stores ticket details in MongoDB.
+- Supports signed image uploads via Cloudinary.
+- Handles AI-based image processing via Pollinations.ai endpoint.
+
+  
+#### Backend Directory Structure
 
 Multi-module Maven project
 
@@ -36,7 +58,11 @@ backend/
         └── pom.xml
 ```
 
-## Ticket status
+## AI-Driven Automation
+
+When an image is attached to a ticket, the backend service publishes an event for asynchronous processing. The image is then sent to the Pollinations.ai endpoint for AI-based analysis, enabling automatic tagging and categorisation without blocking the ticket creation flow.
+
+## Ticket status Lifecycle
 
 - Active:
     - Open: Newly created tickets that haven't been assigned.
@@ -44,6 +70,109 @@ backend/
 - Completed:
     - Closed: Tickets that have been completed and marked as such.
 
-## JWT
-  - Created by user-service on login and registration
-  - Validated by api-gateway and user roles extracted for routing permission
+## Authentication & Authorisation (JWT)
+
+  - Access token created by user-service on registration, login and refresh.
+  - Validated by api-gateway to extract user roles for routing permission.
+  - Refresh token verification performed to issue new access token.
+
+
+## Hosting on AWS EC2
+
+- Add frontend url to CORS_ALLOWED_ORIGINS in `.env` file
+- Build frontend with backend api url as VITE_API_BASE_URL, see `Makefile`
+- Ensure security group of EC2 instance allows HTTP (port 80) and/or HTTPS (port 443) traffic
+- Update Caddyfile (Caddyfile.prod) to use the EC2 public DNS or IP.
+
+### Central proxy Caddy
+
+The AWS EC2 instance is running a central proxy Caddy that binds ports 80/443 and handles all TLS certificates and HTTPS termination. It routes traffic over an internal Docker network (`proxy-network`) based on domain names to site-specific Caddy containers.
+
+The site’s Caddy container is connected to two networks:
+- Its private app network (`helpdesk-network`)
+- The shared external proxy network (`proxy-network`)
+(In docker-compose, `proxy-network` is declared as external)
+
+Each site's Caddy serves static frontends and proxies API requests to its own backend containers. Backends are never exposed directly to the proxy or the internet. They remain isolated on their internal networks.
+
+      Internet HTTPS (443)
+        ↓
+      [ proxy-caddy ]  ---> ports 80/443 on EC2, handles certificates + SSL
+        ↓ shared network (proxy-network), Internal HTTP (port 80)
+      -----------------------------------
+        ↓                            ↓
+      helpdesk-caddy:80      other-website:80
+        ↓                            ↓
+      helpdesk-network       other-network
+
+## CI / CD
+
+- CI/CD is implemented with GitHub Actions. 
+- Pushes to `main` trigger the deployment workflow.
+- The workflow:
+  - Detects frontend/backend changes 
+  - Configures AWS credentials via AWS OIDC to assume an AWS role 
+  - Runs remote commands on EC2 via AWS SSM to update the repo and trigger local build/deploy steps.
+  - Make targets invoked on the instance are defined in [Makefile](Makefile):
+    - `update_repo`: Pulls latest changes from origin/main.
+    - `deploy_frontend`: Updates repo and rebuilds static frontend.
+    - `deploy_backend`: Updates repo, and rebuilds and restarts backend services.
+
+Required GitHub secrets:
+- AWS_ACCOUNT_ID
+- AWS_REGION
+- SSM_INSTANCE_IDS
+
+## How to Run
+
+### Dev Mode
+
+Run the application using docker-compose.dev.yml with:
+
+``` bash
+make dev
+```
+
+#### Frontend
+
+- React app runs in a Docker container
+- The ./frontend directory is mounted to /app in the container, allowing live code updates
+- Served using the Vite development server
+- Accessible on port 5173: http://localhost:5173
+
+#### Backend
+
+- Builds the common library
+- Each microservice runs in a Docker container using Maven: `mvn spring-boot:run`
+- Accessible at: https://localhost:443
+
+### Prod Mode
+
+Run the application using docker-compose.prod.yml with:
+
+``` bash
+make prod
+
+make prod_detached # for detached background
+```
+
+#### Frontend
+
+- React app is built statically and served by Caddy
+- https://ticket-booking.dorukemre.dev/
+
+#### Backend
+
+- Builds Java artifacts for all services
+- Each microservice Dockerfile runs the service using `java -jar app.jar`
+- https://api.ticket-booking.dorukemre.dev/
+
+### Local Prod Mode
+
+To simulate production locally, run the application using both docker-compose.prod.yml and docker-compose.localprod.yml with:
+
+``` bash
+make local_prod
+```
+
+`docker-compose.localprod.yml` overrides `docker-compose.prod.yml` to use `Caddyfile.localprod` to serve frontend at https://localhost:5443 and backend at https://localhost:8443
