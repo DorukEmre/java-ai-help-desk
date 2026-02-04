@@ -86,24 +86,13 @@ When an image is attached to a ticket, the backend service publishes an event fo
 
 ### Central proxy Caddy
 
-The AWS EC2 instance is running a central proxy Caddy that binds ports 80/443 and handles all TLS certificates and HTTPS termination. It routes traffic over an internal Docker network (`proxy-network`) based on domain names to site-specific Caddy containers.
+The AWS EC2 instance is running an edge proxy Caddy that binds ports 80/443 and handles all TLS certificates and HTTPS termination.
+- Routes by hostname to per-app Caddy containers over a shared Docker network `proxy-network`
+- Each app Caddy terminates internal HTTP and routes to its own frontend/API services via its private Docker `app-network`.
+- App networks are isolated; only app Caddies are connected to the shared proxy network.
 
-The site’s Caddy container is connected to two networks:
-- Its private app network (`helpdesk-network`)
-- The shared external proxy network (`proxy-network`)
-(In docker-compose, `proxy-network` is declared as external)
+![reverse proxy diagram](architecture_ec2-reverse-proxy.jpg)
 
-Each site's Caddy serves static frontends and proxies API requests to its own backend containers. Backends are never exposed directly to the proxy or the internet. They remain isolated on their internal networks.
-
-      Internet HTTPS (443)
-        ↓
-      [ proxy-caddy ]  ---> ports 80/443 on EC2, handles certificates + SSL
-        ↓ shared network (proxy-network), Internal HTTP (port 80)
-      -----------------------------------
-        ↓                            ↓
-      helpdesk-caddy:80      other-website:80
-        ↓                            ↓
-      helpdesk-network       other-network
 
 ## CI / CD
 
