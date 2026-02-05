@@ -1,4 +1,4 @@
-package dev.dorukemre.userservice.service;
+package dev.dorukemre.userservice.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;

@@ -1,29 +1,15 @@
 package dev.dorukemre.userservice.service;
 
-import java.time.Instant;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import dev.dorukemre.userservice.entity.RefreshToken;
 import dev.dorukemre.userservice.entity.Role;
 import dev.dorukemre.userservice.entity.User;
 import dev.dorukemre.userservice.exception.InvalidAgentRoleException;
-import dev.dorukemre.userservice.exception.InvalidRefreshTokenException;
-import dev.dorukemre.userservice.exception.RefreshTokenExpiredException;
 import dev.dorukemre.userservice.exception.UserNotFoundException;
-import dev.dorukemre.userservice.exception.UsernameAlreadyExistsException;
-import dev.dorukemre.userservice.repository.RefreshTokenRepository;
 import dev.dorukemre.userservice.repository.UserRepository;
-import dev.dorukemre.userservice.request.LoginRequest;
-import dev.dorukemre.userservice.request.RegisterRequest;
-import dev.dorukemre.userservice.response.AuthResponse;
-import dev.dorukemre.userservice.service.dto.AuthResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,127 +19,16 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 
   private final UserRepository userRepository;
-  private final RefreshTokenRepository refreshTokenRepository;
-  private final PasswordEncoder passwordEncoder;
-  private final AuthenticationManager authenticationManager;
-  private final JwtService jwtService;
 
-  public AuthResult login(LoginRequest request) {
-    log.info("Logging in user: {}", request);
-
-    // Check username/password via UserDetailsService + PasswordEncoder
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(
-            request.getUsername(), request.getPassword()));
-
-    // Fetch user details from DB
-    User user = userRepository
-        .findByUsername(request.getUsername())
-        .orElseThrow(() -> new BadCredentialsException("User not found with username: " + request.getUsername()));
-
-    // Generate access token
-    String accessToken = jwtService.generateAccessToken(user);
-
-    // Generate refresh token, create RefreshToken entity, hash token, save to DB
-    String refreshToken = jwtService.generateRefreshToken();
-    jwtService.createAndPersistRefreshToken(refreshToken, user.getId());
-
-    return (new AuthResult(
-        AuthResponse.builder()
-            .id(user.getId())
-            .username(user.getUsername())
-            .fullname(user.getFullname())
-            .role(user.getRole())
-            .accessToken(accessToken)
-            .build(),
-        refreshToken));
-  }
-
-  public AuthResult register(RegisterRequest request) {
-    log.info("Registering user: {}", request);
-
-    // Check username available
-    if (userRepository.existsByUsername(request.getUsername()))
-      throw new UsernameAlreadyExistsException(request.getUsername());
-
-    // Check user role is valid
-    Role role;
-    try { // If conversion is successful, role is valid
-      role = Role.valueOf(request.getRole().toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Invalid role: " + request.getRole());
-    }
-
-    // Hash password
-    String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-    // Save User to DB
-    User user = User.builder()
-        .username(request.getUsername())
-        .fullname(request.getFullname())
-        .hashedPassword(hashedPassword)
-        .role(role)
-        .build();
-    User savedUser = userRepository.save(user);
-
-    // Authenticate immediately
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(
-            savedUser.getUsername(),
-            request.getPassword()));
-
-    // Generate access token
-    String accessToken = jwtService.generateAccessToken(savedUser);
-
-    // Generate refresh token, create RefreshToken entity, hash token, save to DB
-    String refreshToken = jwtService.generateRefreshToken();
-    jwtService.createAndPersistRefreshToken(refreshToken, user.getId());
-
-    return (new AuthResult(
-        AuthResponse.builder()
-            .id(savedUser.getId())
-            .username(savedUser.getUsername())
-            .fullname(savedUser.getFullname())
-            .role(savedUser.getRole())
-            .accessToken(accessToken)
-            .build(),
-        refreshToken));
-  }
-
-  public AuthResult refresh(String refreshToken) {
-    log.info("Refreshing token...");
-
-    String hashedToken = jwtService.hashToken(refreshToken);
-
-    RefreshToken tokenEntity = refreshTokenRepository
-        .findByTokenHashAndRevokedFalse(hashedToken)
-        .orElseThrow(() -> new InvalidRefreshTokenException());
-
-    if (tokenEntity.getExpiresAt().isBefore(Instant.now())) {
-      refreshTokenRepository.delete(tokenEntity);
-      throw new RefreshTokenExpiredException();
-    }
-
-    User user = userRepository.findById(tokenEntity.getUserId())
-        .orElseThrow(() -> new UserNotFoundException());
-
-    String newAccessToken = jwtService.generateAccessToken(user);
-
-    // Generate new refresh token, hash and save existing entity to DB
-    String newRefreshToken = jwtService.generateRefreshToken();
-    jwtService.hashAndPersistRefreshToken(newRefreshToken, tokenEntity);
-
-    return (new AuthResult(
-        AuthResponse.builder()
-            .id(user.getId())
-            .username(user.getUsername())
-            .fullname(user.getFullname())
-            .role(user.getRole())
-            .accessToken(newAccessToken)
-            .build(),
-        newRefreshToken));
-  }
-
+  /**
+   * Retrieves users from the repository, optionally filtered by role.
+   *
+   * @param roleStr optional role name used to filter users
+   * @return list of users matching the criteria, or all users if no role is
+   *         provided
+   * @throws IllegalArgumentException if {@code roleStr} does not map to a valid
+   *                                  {@link Role}
+   */
   public List<User> listUsers(String roleStr) {
     log.info("Listing users");
 
@@ -170,6 +45,15 @@ public class UserService {
     return userRepository.findAll();
   }
 
+  /**
+   * Validates that the specified user exists and has an agent-capable role
+   * ({@link Role#AGENT} or {@link Role#ADMIN}).
+   * 
+   * @param agentId identifier of the user to validate
+   * @throws UserNotFoundException     if the user does not exist
+   * @throws InvalidAgentRoleException if the user does not have an
+   *                                   agent-capable role
+   */
   public void checkAgent(String agentId) {
     log.info("Checking agent: {}", agentId);
 
