@@ -39,6 +39,8 @@ public class SecurityConfig {
   public SecurityWebFilterChain publicEndpoints(ServerHttpSecurity http) {
     return http
         .securityMatcher(ServerWebExchangeMatchers
+            .pathMatchers(HttpMethod.GET, "/")) // health check
+        .securityMatcher(ServerWebExchangeMatchers
             .pathMatchers(
                 HttpMethod.POST,
                 "/login", "/register", "/refresh"))
