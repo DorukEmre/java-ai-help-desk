@@ -6,6 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
@@ -35,20 +36,35 @@ public class SecurityConfig {
   // Public endpoints
   @Bean
   @Order(1)
-  public SecurityWebFilterChain publicEndpoints(ServerHttpSecurity http) {
+  public SecurityWebFilterChain publicGetEndpoints(ServerHttpSecurity http) {
     return http
+        .securityMatcher(ServerWebExchangeMatchers
+            .pathMatchers(
+                HttpMethod.GET,
+                "/"))
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
         .cors(cors -> cors.configurationSource(request -> corsConfiguration))
-        .authorizeExchange(ex -> ex
-            .pathMatchers(HttpMethod.GET, "/").permitAll()
-            .pathMatchers(HttpMethod.POST, "/login", "/register", "/refresh").permitAll()
-            .anyExchange().authenticated())
+        .authorizeExchange(ex -> ex.anyExchange().permitAll())
+        .build();
+  }
+
+  @Bean
+  @Order(2)
+  public SecurityWebFilterChain publicPostEndpoints(ServerHttpSecurity http) {
+    return http
+        .securityMatcher(ServerWebExchangeMatchers
+            .pathMatchers(
+                HttpMethod.POST,
+                "/login", "/register", "/refresh"))
+        .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .cors(cors -> cors.configurationSource(request -> corsConfiguration))
+        .authorizeExchange(ex -> ex.anyExchange().permitAll())
         .build();
   }
 
   // Protected endpoints, go through JWT
   @Bean
-  @Order(2)
+  @Order(3)
   public SecurityWebFilterChain protectedEndpoints(ServerHttpSecurity http) {
 
     return http
