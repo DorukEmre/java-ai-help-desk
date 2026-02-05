@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -74,6 +75,18 @@ public class GlobalExceptionHandler {
         "message", ex.getMessage(),
         "code", "REFRESH_TOKEN_EXPIRED");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+  }
+
+  // Handle request cookie missing (for refresh token)
+  @ExceptionHandler(MissingRequestCookieException.class)
+  public ResponseEntity<Map<String, String>> handleMissingCookie(
+      MissingRequestCookieException ex) {
+
+    return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .body(Map.of(
+            "error", ex.getMessage(),
+            "code", "MISSING_REFRESH_TOKEN"));
   }
 
   // Generic exception handler for other exceptions
