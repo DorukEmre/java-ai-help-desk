@@ -61,7 +61,7 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
           </Form.Select>
 
           <RequestButton
-            variant="outline-secondary"
+            variant="outline-primary-light"
             onClick={onUpdateStatus}
             disabled={anyLoading}
             isLoading={isLoading.isUpdatingStatus}
@@ -96,7 +96,7 @@ export const TicketAssignment = ({ currentStatus, handleUpdateStatus, agents, cu
           </Form.Select>
 
           <RequestButton
-            variant="outline-secondary"
+            variant="outline-primary-light"
             onClick={onUpdateAgentId}
             disabled={anyLoading}
             isLoading={isLoading.isUpdatingAgent}
