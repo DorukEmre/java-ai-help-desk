@@ -6,7 +6,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
@@ -38,15 +37,12 @@ public class SecurityConfig {
   @Order(1)
   public SecurityWebFilterChain publicEndpoints(ServerHttpSecurity http) {
     return http
-        .securityMatcher(ServerWebExchangeMatchers
-            .pathMatchers(HttpMethod.GET, "/")) // health check
-        .securityMatcher(ServerWebExchangeMatchers
-            .pathMatchers(
-                HttpMethod.POST,
-                "/login", "/register", "/refresh"))
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
         .cors(cors -> cors.configurationSource(request -> corsConfiguration))
-        .authorizeExchange(ex -> ex.anyExchange().permitAll())
+        .authorizeExchange(ex -> ex
+            .pathMatchers(HttpMethod.GET, "/").permitAll()
+            .pathMatchers(HttpMethod.POST, "/login", "/register", "/refresh").permitAll()
+            .anyExchange().authenticated())
         .build();
   }
 
