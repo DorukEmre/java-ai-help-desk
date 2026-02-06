@@ -1,3 +1,17 @@
+import { Card, Col, Container, Image, ListGroup, Row } from "react-bootstrap"
+
+import architecture from "@/assets/architecture_diagram.jpg";
+import iconAmazon from "@/assets/amazon.svg";
+import iconBootstrap from "@/assets/bootstrap.svg";
+import iconCaddy from "@/assets/caddyserver.png";
+import iconGithub from "@/assets/github.svg";
+import iconDocker from "@/assets/docker.svg";
+import iconPollinations from "@/assets/pollinations.png";
+import iconReact from "@/assets/react.svg";
+import iconSpringBoot from "@/assets/spring_boot.svg";
+import iconTypescript from "@/assets/typescript.png";
+import IconCol from "@/components/IconCol";
+
 
 function HomePage() {
 
@@ -5,25 +19,82 @@ function HomePage() {
     <>
       <h1 className="visually-hidden">Home</h1>
 
-      <div>
-        <p>
-          What is Lorem Ipsum?
-        </p><p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-          Why do we use it?
-        </p><p>
-          It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-        </p><p>
-          Where does it come from?
-        </p><p>
-          Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-        </p><p>
-          The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-          Where can I get some?
-        </p><p>
-          There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
-        </p>
-      </div>
+      <Container>
+
+        <h2 className="mb-4 page-section-title">Help Desk Application</h2>
+
+        <Card className="mb-5 shadow-sm mx-0 mx-sm-4">
+          <Card.Body className="p-0">
+            <ListGroup variant="flush">
+              <ListGroup.Item>Create and track support tickets</ListGroup.Item>
+              <ListGroup.Item>Assign tickets to agents</ListGroup.Item>
+              <ListGroup.Item>Update ticket status (open, in progress, closed)</ListGroup.Item>
+              <ListGroup.Item>Track detailed ticket actions</ListGroup.Item>
+            </ListGroup>
+          </Card.Body>
+        </Card>
+
+        <h2 className="mb-4 page-section-title">The Tech</h2>
+
+        <Row className="mb-5 g-4 justify-content-center">
+
+          <Col md={6}>
+            <Card className="h-100 shadow-sm">
+              <Card.Header as="h3">Frontend</Card.Header>
+              <ListGroup variant="flush" className="flex-grow-1">
+                <ListGroup.Item>Built with React and TypeScript, styled with Bootstrap.</ListGroup.Item>
+              </ListGroup>
+              <Card.Body className="flex-grow-0">
+                <Row>
+                  <IconCol src={iconReact} alt="React" />
+                  <IconCol src={iconTypescript} alt="TypeScript" />
+                  <IconCol src={iconBootstrap} alt="Bootstrap" />
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={6}>
+            <Card className="h-100 shadow-sm">
+              <Card.Header as="h3">Backend</Card.Header>
+              <ListGroup variant="flush" className="flex-grow-1">
+                <ListGroup.Item>Microservices-based Java Spring Boot backend, all containerised with Docker.</ListGroup.Item>
+                <ListGroup.Item>AI-driven automation simplifies ticket classification and handling.</ListGroup.Item>
+              </ListGroup>
+              <Card.Body className="flex-grow-0">
+                <Row>
+                  <IconCol src={iconSpringBoot} alt="Spring Boot" />
+                  <IconCol src={iconDocker} alt="Docker" />
+                  <IconCol src={iconPollinations} alt="Pollinations.ai" />
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={6}>
+            <Card className="h-100 shadow-sm">
+              <Card.Header as="h3">Deployment & CI/CD</Card.Header>
+              <ListGroup variant="flush" className="flex-grow-1">
+                <ListGroup.Item>Caddy serves the frontend and reverse proxies API requests to an API Gateway.</ListGroup.Item>
+                <ListGroup.Item>Cloud deployment on AWS EC2 with CI/CD via GitHub Actions.</ListGroup.Item>
+              </ListGroup>
+              <Card.Body className="flex-grow-0">
+                <Row>
+                  <IconCol src={iconCaddy} alt="Caddy" />
+                  <IconCol src={iconAmazon} alt="Amazon Web Services" />
+                  <IconCol src={iconGithub} alt="Github" />
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+
+        </Row>
+
+        <h2 className="mb-4 page-section-title">Application Architecture</h2>
+
+        <Image src={architecture} rounded />
+
+      </Container >
 
     </>
   )
