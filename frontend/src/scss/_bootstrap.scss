@@ -1,0 +1,14 @@
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/bootstrap";
+@import "../css/reset";
+
+$primary-light: lighten($primary, 16%) !important;
+
+:root {
+  --body-bg-lighter: color-mix(in srgb,
+      var(--bs-body-bg),
+      white 12%);
+  --body-bg-darker: color-mix(in srgb,
+      var(--bs-body-bg),
+      black 50%);
+}

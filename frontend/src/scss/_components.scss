@@ -1,0 +1,78 @@
+.btn-outline-primary-light {
+  background-color: transparent;
+  border-color: $primary-light;
+  color: $primary-light;
+
+  &:hover {
+    background-color: $primary !important;
+    border-color: $primary !important;
+    color: var(--bs-body-color) !important;
+  }
+}
+
+.nav-logout-button {
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-logout-button:hover,
+.nav-logout-button:focus {
+  text-decoration: underline;
+}
+
+#view-tickets>li>button {
+  border-left: 1px solid transparent;
+  border-top: 1px solid transparent;
+  border-right: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  border-radius: 0 !important;
+  background-color: $primary;
+  padding: 0.75rem 1rem;
+  color: #fff;
+}
+
+#view-tickets>li>button:not(.active) {
+  border-bottom: 1px solid $secondary;
+}
+
+#view-tickets>li>button.active {
+  background-color: var(--bs-primary-bg-subtle);
+  border-color: $secondary;
+  border-bottom: 1px solid transparent;
+}
+
+.accordion-button.collapsed {
+  background-color: var(--body-bg-darker);
+}
+
+.accordion {
+  border-left: 1px solid $secondary;
+  border-bottom: 1px solid $secondary;
+  border-right: 1px solid $secondary;
+}
+
+.no-tabs.accordion {
+  border-top: 1px solid $secondary;
+}
+
+.ticket-list-item {
+  border-left: none;
+  border-right: none;
+
+  &:hover,
+  &:focus-within {
+    background-color: var(--body-bg-lighter);
+  }
+}
+
+.ticket-list-item-link {
+  text-decoration: none !important;
+}
+
+@media (max-width: 576px) {
+  .accordion {
+    border-left: none;
+    border-right: none;
+  }
+}
