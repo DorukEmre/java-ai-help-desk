@@ -10,6 +10,23 @@
   }
 }
 
+.page-section-title {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: 1.5rem;
+}
+
+.page-section-title::before {
+  display: block;
+  width: 5px;
+  height: 100%;
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  background: $primary;
+}
+
 .nav-logout-button {
   border: none;
   cursor: pointer;
