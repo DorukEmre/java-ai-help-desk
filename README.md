@@ -1,8 +1,8 @@
-A full-stack help desk application for managing support tickets, featuring a **React**, **TypeScript**, **Bootstrap** frontend and a microservices-based backend with **Java Spring Boot**, all deployed in **Docker** containers.  
+Full-stack help desk application for managing support tickets, featuring a **React**, **TypeScript**, **Bootstrap** frontend and a microservices-based backend with **Java Spring Boot**, all deployed in **Docker** containers.  
 
-The platform incorporates **AI-driven automation** through external integrations to streamline ticket classification and handling.
+**AI-driven automation** through external integrations to streamline ticket classification and handling.
 
-A **Caddy web server** serves a static React application and reverse proxies API requests to an API Gateway.
+A **Caddy web server** serves the static frontend and reverse proxies API requests to an API Gateway.
 
 **Cloud deployment** to **AWS EC2**.
 
