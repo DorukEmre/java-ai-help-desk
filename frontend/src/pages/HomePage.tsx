@@ -4,8 +4,9 @@ import architecture from "@/assets/architecture_diagram.jpg";
 import iconAmazon from "@/assets/amazon.svg";
 import iconBootstrap from "@/assets/bootstrap.svg";
 import iconCaddy from "@/assets/caddyserver.png";
-import iconGithub from "@/assets/github.svg";
 import iconDocker from "@/assets/docker.svg";
+import iconGithub from "@/assets/github.svg";
+import iconJava from "@/assets/java.svg";
 import iconPollinations from "@/assets/pollinations.png";
 import iconReact from "@/assets/react.svg";
 import iconSpringBoot from "@/assets/spring_boot.svg";
@@ -63,6 +64,7 @@ function HomePage() {
               </ListGroup>
               <Card.Body className="flex-grow-0">
                 <Row>
+                  <IconCol src={iconJava} alt="Java" />
                   <IconCol src={iconSpringBoot} alt="Spring Boot" />
                   <IconCol src={iconDocker} alt="Docker" />
                   <IconCol src={iconPollinations} alt="Pollinations.ai" />
