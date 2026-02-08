@@ -54,14 +54,27 @@ function HomePage() {
             <Card className="h-100 shadow-sm">
               <Card.Header as="h3">Backend</Card.Header>
               <ListGroup variant="flush" className="flex-grow-1">
-                <ListGroup.Item>Microservices-based Java Spring Boot backend, all containerised with Docker.</ListGroup.Item>
-                <ListGroup.Item>AI-driven automation simplifies ticket classification and handling.</ListGroup.Item>
+                <ListGroup.Item>Microservices-based Java Spring Boot backend</ListGroup.Item>
+                <ListGroup.Item>All services containerised with Docker</ListGroup.Item>
               </ListGroup>
               <Card.Body className="flex-grow-0">
                 <Row>
                   <IconCol src={iconJava} alt="Java" />
                   <IconCol src={iconSpringBoot} alt="Spring Boot" />
                   <IconCol src={iconDocker} alt="Docker" />
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={6}>
+            <Card className="h-100 shadow-sm">
+              <Card.Header as="h3">AI-Integration</Card.Header>
+              <ListGroup variant="flush" className="flex-grow-1">
+                <ListGroup.Item>AI-powered image processing via Pollinations.ai to simplify ticket classification and handling</ListGroup.Item>
+              </ListGroup>
+              <Card.Body className="flex-grow-0">
+                <Row>
                   <IconCol src={iconPollinations} alt="Pollinations.ai" />
                 </Row>
               </Card.Body>
@@ -72,8 +85,8 @@ function HomePage() {
             <Card className="h-100 shadow-sm">
               <Card.Header as="h3">Deployment & CI/CD</Card.Header>
               <ListGroup variant="flush" className="flex-grow-1">
-                <ListGroup.Item>Caddy serves the frontend and reverse proxies API requests to an API Gateway.</ListGroup.Item>
-                <ListGroup.Item>Cloud deployment on AWS EC2 with CI/CD via GitHub Actions.</ListGroup.Item>
+                <ListGroup.Item>Caddy serves the frontend and reverse proxies API requests to an API Gateway</ListGroup.Item>
+                <ListGroup.Item>Cloud deployment on AWS EC2 with CI/CD via GitHub Actions</ListGroup.Item>
               </ListGroup>
               <Card.Body className="flex-grow-0">
                 <Row>
