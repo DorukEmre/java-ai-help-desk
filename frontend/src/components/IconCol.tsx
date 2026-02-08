@@ -9,7 +9,7 @@ interface Props {
 
 const IconCol = ({ src, alt, size = 36, className }: Props) => (
   <Col className={`d-flex justify-content-center align-items-center ${className || ""}`}>
-    <img src={src} alt={alt} style={{ width: size }} />
+    <img src={src} alt={alt} style={{ height: size }} />
   </Col>
 );
 
