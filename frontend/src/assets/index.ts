@@ -1,14 +1,15 @@
 import architectureDiagram from "@/assets/architecture_diagram.jpg";
-import iconAmazon from "@/assets/amazon.svg";
-import iconBootstrap from "@/assets/bootstrap.svg";
-import iconCaddy from "@/assets/caddyserver.png";
-import iconDocker from "@/assets/docker.svg";
-import iconGithub from "@/assets/github.svg";
-import iconJava from "@/assets/java.svg";
-import iconPollinations from "@/assets/pollinations.png";
-import iconReact from "@/assets/react.svg";
-import iconSpringBoot from "@/assets/spring_boot.svg";
-import iconTypescript from "@/assets/typescript.png";
+
+import iconAmazon from "@/assets/logos/aws.svg";
+import iconBootstrap from "@/assets/logos/bootstrap.svg";
+import iconCaddy from "@/assets/logos/caddyserver.png";
+import iconDocker from "@/assets/logos/docker.svg";
+import iconGithub from "@/assets/logos/github.svg";
+import iconJava from "@/assets/logos/java.svg";
+import iconPollinations from "@/assets/logos/pollinations.png";
+import iconReact from "@/assets/logos/react.svg";
+import iconSpringBoot from "@/assets/logos/spring_boot.svg";
+import iconTypescript from "@/assets/logos/typescript.png";
 
 export {
   architectureDiagram,
