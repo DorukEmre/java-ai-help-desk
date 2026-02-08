@@ -1,16 +1,11 @@
 import { Card, Col, Container, Image, ListGroup, Row } from "react-bootstrap"
 
-import architecture from "@/assets/architecture_diagram.jpg";
-import iconAmazon from "@/assets/amazon.svg";
-import iconBootstrap from "@/assets/bootstrap.svg";
-import iconCaddy from "@/assets/caddyserver.png";
-import iconDocker from "@/assets/docker.svg";
-import iconGithub from "@/assets/github.svg";
-import iconJava from "@/assets/java.svg";
-import iconPollinations from "@/assets/pollinations.png";
-import iconReact from "@/assets/react.svg";
-import iconSpringBoot from "@/assets/spring_boot.svg";
-import iconTypescript from "@/assets/typescript.png";
+import {
+  architectureDiagram,
+  iconAmazon, iconBootstrap, iconCaddy, iconDocker, iconGithub, iconJava,
+  iconPollinations, iconReact, iconSpringBoot, iconTypescript,
+} from "@/assets/index"
+
 import IconCol from "@/components/IconCol";
 
 
@@ -94,7 +89,7 @@ function HomePage() {
 
         <h2 className="mb-4 page-section-title">Application Architecture</h2>
 
-        <Image src={architecture} rounded />
+        <Image src={architectureDiagram} rounded />
 
       </Container >
 
