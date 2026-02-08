@@ -10,6 +10,10 @@
   }
 }
 
+.border-color-body {
+  border-color: var(--bs-body-color) !important;
+}
+
 .page-section-title {
   position: relative;
   padding-left: 1.25rem;
@@ -85,6 +89,16 @@
 
 .ticket-list-item-link {
   text-decoration: none !important;
+}
+
+.border-start-md {
+  border-left: 0;
+}
+
+@media (min-width: 768px) {
+  .border-start-md {
+    border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-body-color);
+  }
 }
 
 @media (max-width: 576px) {
